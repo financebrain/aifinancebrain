@@ -58,6 +58,9 @@ export default function RootLayout({ children }) {
                 <Link href="/market-brief" className="text-white hover:text-blue-300 text-sm">
                   Market Brief
                 </Link>
+                <Link href="/portfolio" className="text-white hover:text-blue-300 text-sm">
+                  Portfolio
+                </Link>
                 <Link href="/assistant" className="text-white hover:text-blue-300 text-sm">
                   AI Assistant
                 </Link>

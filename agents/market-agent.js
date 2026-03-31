@@ -7,27 +7,27 @@ export async function runMarketAgent() {
   const [niftyData, sectors] = await Promise.all([fetchNiftyData(), fetchTopSectors()]);
 
   // Step 2: Build Gemini prompt
-  const prompt = `You are a senior financial analyst at a top Indian investment firm.
-You are writing the daily morning brief for retail investors.
-Write with confidence, clarity, and human warmth.
+  const prompt = `You are a senior financial analyst at a 
+top Indian investment firm. Write the daily morning brief 
+for retail investors who trust you completely.
 
-Market data today:
-- Nifty 50: ₹${niftyData.price} (${niftyData.changePercent > 0 ? '+' : ''}${niftyData.changePercent}% today)
-- Sector performance: ${JSON.stringify(sectors)}
+Today's market data:
+- Nifty 50: ₹${niftyData.price} 
+  (${niftyData.changePercent >= 0 ? '+' : ''}${niftyData.changePercent}% today)
+- Sector movements: ${JSON.stringify(sectors)}
 
-Write a morning brief that feels like it comes from a trusted financial advisor.
-Be specific — mention actual numbers, actual sector names.
-Be helpful — tell people what this means for their money.
+Write as a trusted advisor. Be specific with real numbers.
+Explain what this means for a regular investor in plain English.
 
-Respond ONLY with valid JSON, no markdown, no explanation:
+Respond ONLY with valid JSON, absolutely no markdown or extra text:
 {
-  "title": "engaging headline that captures the key market theme today (under 10 words)",
-  "summary": "2 sentences explaining what is happening in markets today and why it matters for investors. Be specific with numbers and sector names.",
-  "strong_sectors": ["list", "of", "strong", "sectors"],
-  "weak_sectors": ["list", "of", "weak", "sectors"],
-  "key_signal": "the single most important thing happening in markets today",
-  "confidence": "high or medium or low",
-  "suggested_action": "one specific, actionable sentence — what should a regular investor pay attention to or do today"
+  "title": "punchy headline capturing today's key theme (max 8 words)",
+  "summary": "2 confident sentences explaining what is happening today and why it matters. Use actual numbers. Mention specific sectors.",
+  "strong_sectors": ["sector1", "sector2"],
+  "weak_sectors": ["sector1"],
+  "key_signal": "the single most important thing an investor should know today",
+  "confidence": "high",
+  "suggested_action": "one specific plain English sentence — what should a retail investor pay attention to today"
 }`;
 
   // Step 3: Call Gemini

@@ -15,7 +15,8 @@ export default function Home() {
   const [insights, setInsights] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [lastUpdated, setLastUpdated] = useState('')
-  const [time, setTime] = useState('')
+  const [clock, setClock] = useState('')
+  const [greeting, setGreeting] = useState('Good morning.')
 
   const heroInsight = insights.find((i) => i?.type === 'market') || null
   const opportunities = insights.filter((i) => i?.type === 'opportunity')
@@ -65,14 +66,24 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
-    const tick = () =>
-      setTime(
-        new Date().toLocaleTimeString('en-IN', {
-          hour: '2-digit',
-          minute: '2-digit',
-          timeZone: 'Asia/Kolkata',
-        }) + ' IST',
-      )
+    function tick() {
+      const now = new Date()
+      const ist = new Intl.DateTimeFormat('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+      }).format(now)
+      setClock(ist + ' IST')
+
+      const hour = new Date(
+        now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })
+      ).getHours()
+      if (hour < 12) setGreeting('Good morning.')
+      else if (hour < 17) setGreeting('Good afternoon.')
+      else setGreeting('Good evening.')
+    }
     tick()
     const t = setInterval(tick, 1000)
     return () => clearInterval(t)
@@ -82,19 +93,31 @@ export default function Home() {
     <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
       {/* Row 1 — Header */}
       <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-bold text-[#1B2A4A]">
-          Good morning.
-          <span className="text-sm text-gray-400 font-normal ml-3">{time}</span>
-        </h1>
-        <p className="text-gray-500">Here is your AI financial brief for today.</p>
-        <div className="flex items-center gap-2 mt-1">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+        <div className="flex items-end gap-3 flex-wrap">
+          <h1 className="text-3xl font-bold text-[#1B2A4A]">
+            {greeting}
+          </h1>
+          <span className="text-sm text-gray-400 mb-1 font-mono">
+            {clock}
           </span>
-          <span className="text-xs text-green-600 font-medium">
-            AI analyst active — monitoring Indian markets
-          </span>
+        </div>
+        <div className="mt-1 space-y-1">
+          <p className="text-gray-500">
+            Here is your AI financial brief for today.
+          </p>
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex 
+                h-full w-full rounded-full bg-green-400 opacity-75">
+              </span>
+              <span className="relative inline-flex rounded-full 
+                h-2 w-2 bg-green-500">
+              </span>
+            </span>
+            <span className="text-xs text-green-600 font-medium">
+              AI analyst active — monitoring Indian markets
+            </span>
+          </div>
         </div>
       </div>
 

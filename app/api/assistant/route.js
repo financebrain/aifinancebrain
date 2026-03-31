@@ -1,50 +1,55 @@
-import { callGemini } from '@/lib/gemini'
 import { NextResponse } from 'next/server'
+import { callGemini } from '@/lib/gemini'
 import supabase from '@/lib/supabase'
 
 export async function POST(request) {
   try {
-    const { message } = await request.json()
+    const body = await request.json()
+    const message = body?.message?.trim()
 
-    if (!message || message.trim() === '') {
+    if (!message) {
       return NextResponse.json(
-        { success: false, error: 'Message is required' },
+        { success: false, error: 'Message is empty' },
         { status: 400 }
       )
     }
 
-    // Fetch recent insights to give the AI context
-    const { data: recentInsights } = await supabase
+    // Get recent insights for context
+    const { data: insights } = await supabase
       .from('insights')
-      .select('type, title, reason, confidence, suggested_action')
+      .select('type, title, reason, suggested_action, confidence')
       .order('created_at', { ascending: false })
-      .limit(5)
+      .limit(6)
 
-    const insightContext = recentInsights?.length
-      ? 'Recent AI analysis of Indian markets:\n' +
-        recentInsights.map(i =>
-          `${i.type.toUpperCase()}: ${i.title} — ${i.reason}`
+    const context = insights?.length
+      ? 'Latest AI market intelligence:\n' +
+        insights.map(i =>
+          `[${i.type.toUpperCase()}] ${i.title}: ${i.reason}`
         ).join('\n')
-      : 'No recent market analysis available yet.'
+      : 'No recent market analysis available.'
 
-    const prompt = `You are an AI financial assistant for Indian retail investors.
-You have access to the latest AI-generated market intelligence below.
-Answer the user's question clearly, specifically, and in plain English.
-Focus on Indian markets — NSE, BSE, Nifty, mutual funds, ETFs.
-Always be helpful, never alarmist.
-End every response with: "Note: This is AI-generated information for awareness only, not SEBI-registered investment advice."
+    const prompt = `You are a friendly, knowledgeable AI financial assistant 
+for Indian retail investors. You work for AI Financial Brain.
 
-${insightContext}
+Your job is to help users understand markets and make better 
+financial decisions. Always be clear, specific, and encouraging.
+Never be alarmist. Always mention this is educational information,
+not SEBI-registered investment advice.
+
+Current market intelligence from our AI agents:
+${context}
 
 User question: ${message}
 
-Give a direct, helpful answer in 3-5 sentences maximum.`
+Reply in 2-4 sentences. Be specific and helpful.
+End with: "Note: AI-generated insights for awareness only, 
+not SEBI-registered investment advice."`
 
     const reply = await callGemini(prompt)
 
     return NextResponse.json({ success: true, reply })
   } catch (error) {
-    console.error('Assistant error:', error)
+    console.error('Assistant error:', error.message)
     return NextResponse.json(
       { success: false, error: error.message },
       { status: 500 }

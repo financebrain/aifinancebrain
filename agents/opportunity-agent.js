@@ -7,21 +7,27 @@ export async function runOpportunityAgent() {
   const [sectors, niftyData] = await Promise.all([fetchTopSectors(), fetchNiftyData()]);
 
   // Step 2: Build Gemini prompt
-  const prompt = `You are an opportunity detection specialist for Indian markets.
-   Your job is to find the single best investment opportunity right now.
-   Market data: Nifty ${niftyData.changePercent}%
-   Sector data: ${JSON.stringify(sectors)}
-   
-   Identify the ONE best opportunity based on this data.
-   Respond ONLY with valid JSON, no markdown:
-   {
-     "title": "opportunity headline under 10 words",
-     "asset": "specific ETF or index name",
-     "reason": "2 sentences explaining why this is an opportunity now",
-     "confidence": "high" or "medium" or "low",
-     "time_horizon": "short-term (days)" or "medium-term (weeks)",
-     "suggested_action": "specific plain English action to consider"
-   }`;
+  const prompt = `You are an opportunity detection specialist 
+for Indian equity markets.
+
+Today's data:
+- Nifty: ${niftyData.changePercent >= 0 ? '+' : ''}${niftyData.changePercent}%
+- Sectors: ${JSON.stringify(sectors)}
+
+Find the ONE best investment opportunity in Indian markets today.
+Be specific — name actual ETFs available in India like:
+Nifty 50 Index ETF, Bank Nifty ETF, Nippon India Banking ETF,
+ICICI Prudential IT ETF, Kotak Gold ETF, etc.
+
+Respond ONLY with valid JSON, no markdown:
+{
+  "title": "specific opportunity headline (max 8 words)",
+  "asset": "specific Indian ETF or index name",
+  "reason": "2 specific sentences with real numbers explaining why this is an opportunity RIGHT NOW",
+  "confidence": "high or medium or low",
+  "time_horizon": "short-term (days) or medium-term (weeks)",
+  "suggested_action": "specific plain English action with rupee amount example like: Consider allocating ₹3,000-5,000 to..."
+}`;
 
   // Step 3: Call Gemini
   const rawResponse = await callGemini(prompt);

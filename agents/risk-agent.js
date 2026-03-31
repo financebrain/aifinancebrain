@@ -7,22 +7,26 @@ export async function runRiskAgent() {
   const [sectors, niftyData] = await Promise.all([fetchTopSectors(), fetchNiftyData()]);
 
   // Step 2: Build Gemini prompt
-  const prompt = `You are a risk management specialist for Indian retail investors.
-   Your job is to identify the most important risk right now.
-   Market data: Nifty ${niftyData.changePercent}%
-   Sector data: ${JSON.stringify(sectors)}
-   
-   Identify the single most important risk signal in this data.
-   If there is no significant risk, confidence should be 'low'.
-   Respond ONLY with valid JSON, no markdown:
-   {
-     "title": "risk alert headline under 10 words",
-     "risk_area": "specific sector or market area at risk",
-     "reason": "2 sentences explaining the risk clearly",
-     "severity": "high" or "medium" or "low",
-     "confidence": "high" or "medium" or "low",
-     "suggested_action": "one plain English protective action"
-   }`;
+  const prompt = `You are a risk management specialist 
+protecting Indian retail investors.
+
+Today's data:
+- Nifty: ${niftyData.changePercent >= 0 ? '+' : ''}${niftyData.changePercent}%  
+- Sectors: ${JSON.stringify(sectors)}
+
+Identify the most important risk signal in today's market.
+If markets look genuinely stable, say so with low confidence.
+Never manufacture risks that are not in the data.
+
+Respond ONLY with valid JSON, no markdown:
+{
+  "title": "risk headline under 8 words",
+  "risk_area": "specific sector or market area",
+  "reason": "2 specific sentences explaining the risk with real numbers",
+  "severity": "high or medium or low",
+  "confidence": "high or medium or low",
+  "suggested_action": "one specific protective action an investor should take"
+}`;
 
   // Step 3: Call Gemini
   const rawResponse = await callGemini(prompt);
