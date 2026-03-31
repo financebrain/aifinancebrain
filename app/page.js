@@ -15,6 +15,7 @@ export default function Home() {
   const [insights, setInsights] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [lastUpdated, setLastUpdated] = useState('')
+  const [time, setTime] = useState('')
 
   const heroInsight = insights.find((i) => i?.type === 'market') || null
   const opportunities = insights.filter((i) => i?.type === 'opportunity')
@@ -63,12 +64,38 @@ export default function Home() {
     }
   }, [])
 
+  useEffect(() => {
+    const tick = () =>
+      setTime(
+        new Date().toLocaleTimeString('en-IN', {
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZone: 'Asia/Kolkata',
+        }) + ' IST',
+      )
+    tick()
+    const t = setInterval(tick, 1000)
+    return () => clearInterval(t)
+  }, [])
+
   return (
     <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
       {/* Row 1 — Header */}
       <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-bold text-[#1B2A4A]">Good morning.</h1>
+        <h1 className="text-3xl font-bold text-[#1B2A4A]">
+          Good morning.
+          <span className="text-sm text-gray-400 font-normal ml-3">{time}</span>
+        </h1>
         <p className="text-gray-500">Here is your AI financial brief for today.</p>
+        <div className="flex items-center gap-2 mt-1">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+          </span>
+          <span className="text-xs text-green-600 font-medium">
+            AI analyst active — monitoring Indian markets
+          </span>
+        </div>
       </div>
 
       {/* Row 2 — Market Snapshot */}
