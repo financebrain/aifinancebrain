@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+import supabase from '@/lib/supabase'
+
 import { runMarketAgent } from '../../../agents/market-agent.js';
 import { runNewsAgent } from '../../../agents/news-agent.js';
 import { runSectorAgent } from '../../../agents/sector-agent.js';
@@ -8,6 +10,14 @@ import { runRiskAgent } from '../../../agents/risk-agent.js';
 
 export async function GET(request) {
   try {
+    // Delete today's insights to prevent duplicates
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    await supabase
+      .from('insights')
+      .delete()
+      .gte('created_at', today.toISOString())
+
     const settled = await Promise.allSettled([
       runMarketAgent(),
       runNewsAgent(),

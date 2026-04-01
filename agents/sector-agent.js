@@ -7,22 +7,26 @@ export async function runSectorAgent() {
   const [sectors, niftyData] = await Promise.all([fetchTopSectors(), fetchNiftyData()]);
 
   // Step 2: Build Gemini prompt
-  const prompt = `You are a sector rotation analyst for Indian equity markets.
-   Analyze these sector performance numbers.
-   Nifty overall: ${niftyData.changePercent}%
-   Sector data: ${JSON.stringify(sectors)}
-   
-   Respond ONLY with valid JSON, no markdown:
-   {
-     "title": "sector landscape summary under 10 words",
-     "top_sector": "name of strongest sector",
-     "top_sector_reason": "one sentence why",
-     "weak_sector": "name of weakest sector",
-     "weak_sector_reason": "one sentence why",
-     "rotation_signal": "one sentence on where money is moving",
-     "confidence": "high" or "medium" or "low",
-     "suggested_action": "one plain English sentence"
-   }`;
+  const prompt = `You are a sector rotation analyst for Indian markets.
+
+Today's data:
+- Nifty overall: ${niftyData.changePercent >= 0 ? '+' : ''}${niftyData.changePercent}%
+- All sectors: ${JSON.stringify(sectors)}
+
+Identify which sectors are gaining and losing investor interest today.
+Be specific with actual percentage numbers from the data above.
+
+Respond ONLY with valid JSON, no markdown:
+{
+  "title": "sector theme in 4-6 words",
+  "top_sector": "name of strongest sector",
+  "top_sector_reason": "specific sentence with exact percentage why this sector leads",
+  "weak_sector": "name of weakest sector", 
+  "weak_sector_reason": "specific sentence with exact percentage",
+  "rotation_signal": "one sentence on where money is moving today with numbers",
+  "confidence": "high or medium or low",
+  "suggested_action": "specific action mentioning actual sector names and ETFs"
+}`;
 
   // Step 3: Call Gemini
   const rawResponse = await callGemini(prompt);
