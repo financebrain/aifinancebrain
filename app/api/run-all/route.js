@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { createServerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 
 import { runMarketAgent } from '../../../agents/market-agent.js';
@@ -12,7 +12,20 @@ import { runRiskAgent } from '../../../agents/risk-agent.js';
 export async function GET(request) {
   try {
     const cookieStore = cookies()
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll()
+          },
+          setAll() {
+            // no-op: this route only needs to READ session cookies
+          },
+        },
+      },
+    )
     const { data: { session } } = await supabase.auth.getSession()
     const userId = session?.user?.id || null
 
