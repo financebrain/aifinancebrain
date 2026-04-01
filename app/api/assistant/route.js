@@ -1,3 +1,5 @@
+// v2 - updated for Groq provider
+
 import { NextResponse } from 'next/server'
 import { callGemini } from '@/lib/gemini'
 import supabase from '@/lib/supabase'
