@@ -1,12 +1,14 @@
 import { fetchNiftyData, fetchTopSectors } from '../lib/data-fetcher.js';
 import { callGemini } from '../lib/gemini.js';
 import supabase from '../lib/supabase.js';
+import { getUserContext } from '../lib/user-context.js'
 
-export async function runMarketAgent() {
+export async function runMarketAgent(userId = null) {
   // Step 1: Fetch raw market data
   const [niftyData, sectors] = await Promise.all([fetchNiftyData(), fetchTopSectors()]);
 
   // Step 2: Build Gemini prompt
+  const userContext = await getUserContext(userId)
   const prompt = `You are a senior financial analyst at a 
 top Indian investment firm. Write the daily morning brief 
 for retail investors who trust you completely.
@@ -28,7 +30,8 @@ Respond ONLY with valid JSON, absolutely no markdown or extra text:
   "key_signal": "the single most important thing an investor should know today",
   "confidence": "high",
   "suggested_action": "one specific plain English sentence — what should a retail investor pay attention to today"
-}`;
+}
+${userContext}`;
 
   // Step 3: Call Gemini
   await new Promise(resolve => setTimeout(resolve, 4000)); // added  delay to rate limit isuue . remove this in production .

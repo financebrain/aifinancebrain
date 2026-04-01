@@ -1,12 +1,14 @@
 import { fetchNiftyData, fetchTopSectors } from '../lib/data-fetcher.js';
 import { callGemini } from '../lib/gemini.js';
 import supabase from '../lib/supabase.js';
+import { getUserContext } from '../lib/user-context.js'
 
-export async function runSectorAgent() {
+export async function runSectorAgent(userId = null) {
   // Step 1: Fetch raw market data
   const [sectors, niftyData] = await Promise.all([fetchTopSectors(), fetchNiftyData()]);
 
   // Step 2: Build Gemini prompt
+  const userContext = await getUserContext(userId)
   const prompt = `You are a sector rotation analyst for Indian markets.
 
 Today's data:
@@ -26,7 +28,8 @@ Respond ONLY with valid JSON, no markdown:
   "rotation_signal": "one sentence on where money is moving today with numbers",
   "confidence": "high or medium or low",
   "suggested_action": "specific action mentioning actual sector names and ETFs"
-}`;
+}
+${userContext}`;
 
   // Step 3: Call Gemini
   const rawResponse = await callGemini(prompt);

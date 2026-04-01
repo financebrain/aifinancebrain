@@ -1,4 +1,7 @@
 import React from 'react';
+import { ThumbsUp, ThumbsDown } from 'lucide-react'
+import { useState } from 'react'
+import supabase from '@/lib/supabase'
 
 const CONFIDENCE_CLASSES = {
   high: 'bg-green-100 text-green-800',
@@ -21,9 +24,25 @@ export default function InsightCard({
   confidence,
   suggested_action,
   isLoading,
+  id,
 }) {
+  const [voted, setVoted] = useState(null)
+
   const typeBorderClass = TYPE_BORDER_CLASSES[type] || 'border-gray-200';
   const confidenceClass = CONFIDENCE_CLASSES[confidence] || CONFIDENCE_CLASSES.low;
+
+  async function vote(rating) {
+    if (voted) return
+    setVoted(rating)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      await supabase.from('feedback').insert({
+        user_id: user?.id || null,
+        insight_id: id || null,
+        rating,
+      })
+    } catch(e) { console.log('Vote error:', e.message) }
+  }
 
   return (
     <div className={`bg-white rounded-xl shadow-md p-6 border-l-4 ${typeBorderClass}`}>
@@ -56,6 +75,45 @@ export default function InsightCard({
           <div className="border-t border-gray-100 mt-4 pt-4">
             <div className="text-xs uppercase text-gray-400 font-medium">Suggested Action</div>
             <div className="text-sm text-[#1B2A4A] font-medium mt-1">{suggested_action}</div>
+          </div>
+
+          <div className='flex items-center justify-between
+            mt-4 pt-3 border-t border-white/20'>
+            <p className='text-xs text-blue-200 opacity-70'>
+              Was this helpful?
+            </p>
+            <div className='flex gap-2'>
+              <button
+                onClick={() => vote('helpful')}
+                disabled={!!voted}
+                className={`flex items-center gap-1 px-3 py-1
+                  rounded-full text-xs font-medium transition-all
+                  ${voted === 'helpful'
+                    ? 'bg-green-400 text-white'
+                    : voted
+                    ? 'opacity-30 cursor-not-allowed text-white/50'
+                    : 'text-white/70 hover:bg-white/20 hover:text-white'
+                  }`}
+              >
+                <ThumbsUp size={11} />
+                {voted === 'helpful' ? 'Thanks!' : 'Yes'}
+              </button>
+              <button
+                onClick={() => vote('not_helpful')}
+                disabled={!!voted}
+                className={`flex items-center gap-1 px-3 py-1
+                  rounded-full text-xs font-medium transition-all
+                  ${voted === 'not_helpful'
+                    ? 'bg-red-400 text-white'
+                    : voted
+                    ? 'opacity-30 cursor-not-allowed text-white/50'
+                    : 'text-white/70 hover:bg-white/20 hover:text-white'
+                  }`}
+              >
+                <ThumbsDown size={11} />
+                {voted === 'not_helpful' ? 'Noted' : 'No'}
+              </button>
+            </div>
           </div>
         </>
       )}

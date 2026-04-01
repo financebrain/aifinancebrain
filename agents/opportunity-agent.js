@@ -1,12 +1,14 @@
 import { fetchNiftyData, fetchTopSectors } from '../lib/data-fetcher.js';
 import { callGemini } from '../lib/gemini.js';
 import supabase from '../lib/supabase.js';
+import { getUserContext } from '../lib/user-context.js'
 
-export async function runOpportunityAgent() {
+export async function runOpportunityAgent(userId = null) {
   // Step 1: Fetch raw market data
   const [sectors, niftyData] = await Promise.all([fetchTopSectors(), fetchNiftyData()]);
 
   // Step 2: Build Gemini prompt
+  const userContext = await getUserContext(userId)
   const prompt = `You are an opportunity detection specialist 
 for Indian equity markets.
 
@@ -27,7 +29,8 @@ Respond ONLY with valid JSON, no markdown:
   "confidence": "high or medium or low",
   "time_horizon": "short-term (days) or medium-term (weeks)",
   "suggested_action": "specific plain English action with rupee amount example like: Consider allocating ₹3,000-5,000 to..."
-}`;
+}
+${userContext}`;
 
   // Step 3: Call Gemini
   const rawResponse = await callGemini(prompt);

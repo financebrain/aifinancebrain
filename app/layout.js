@@ -2,8 +2,10 @@
 
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import supabase from '@/lib/supabase'
+import { LogOut, User } from 'lucide-react'
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,28 +19,63 @@ const geistMono = Geist_Mono({
 });
 
 export default function RootLayout({ children }) {
-  const [running, setRunning] = useState(false);
-  const [runStatus, setRunStatus] = useState("");
+  const [user, setUser] = useState(null)
+  const [userProfile, setUserProfile] = useState(null)
+  const router = useRouter()
 
-  const delay = (ms) => new Promise((r) => setTimeout(r, ms));
+  const [runStatus, setRunStatus] = useState('')
+  const [isRunning, setIsRunning] = useState(false)
 
-  const onRunAnalysis = async () => {
-    if (running) return;
-    setRunning(true);
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user)
+      if (user) {
+        supabase.from('profiles')
+          .select('full_name, risk_tolerance')
+          .eq('id', user.id).single()
+          .then(({ data }) => setUserProfile(data))
+      }
+    })
+    const { data: { subscription } } =
+      supabase.auth.onAuthStateChange((_, session) => {
+        setUser(session?.user || null)
+      })
+    return () => subscription.unsubscribe()
+  }, [])
+
+  async function handleLogout() {
+    await supabase.auth.signOut()
+    router.push('/login')
+  }
+
+  async function runAnalysis() {
+    if (isRunning) return
+    setIsRunning(true)
+    const steps = [
+      'Collecting market data...',
+      'Running Market Agent...',
+      'Running News Agent...',
+      'Running Opportunity Radar...',
+      'Running Risk Shield...',
+      'Generating insights...',
+    ]
+    let i = 0
+    setRunStatus(steps[0])
+    const interval = setInterval(() => {
+      i++
+      if (i < steps.length) setRunStatus(steps[i])
+    }, 2500)
     try {
-      setRunStatus("Collecting market data...");
-      await delay(1000);
-
-      setRunStatus("Running AI agents...");
-      await fetch("/api/run-all");
-
-      setRunStatus("Storing insights...");
-      await delay(500);
-    } finally {
-      setRunning(false);
-      setRunStatus("");
-    }
-  };
+      await fetch('/api/run-all')
+    } catch(e) { console.log('Run error:', e) }
+    clearInterval(interval)
+    setRunStatus('Done!')
+    setTimeout(() => {
+      setRunStatus('')
+      setIsRunning(false)
+      window.location.reload()
+    }, 1000)
+  }
 
   return (
     <html
@@ -67,16 +104,35 @@ export default function RootLayout({ children }) {
               </div>
 
               <button
-                type="button"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
-                onClick={onRunAnalysis}
-                disabled={running}
+                onClick={runAnalysis}
+                disabled={isRunning}
+                className={`px-4 py-2 rounded-lg text-sm font-semibold
+                  transition-all ${isRunning
+                    ? 'bg-blue-400 cursor-not-allowed text-white'
+                    : 'bg-[#2563EB] hover:bg-blue-700 text-white'
+                  }`}
               >
-                <span className="inline-flex items-center gap-2">
-                  {running ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                  {running ? runStatus : "Run AI Analysis"}
-                </span>
+                {isRunning ? runStatus || 'Running...' : 'Run AI Analysis'}
               </button>
+
+              {user && (
+                <div className='flex items-center gap-3 ml-2'>
+                  <User size={16} className="text-blue-200 hidden md:block" />
+                  <div className='text-right hidden md:block'>
+                    <p className='text-white text-xs font-medium'>
+                      {userProfile?.full_name || user.email?.split('@')[0]}
+                    </p>
+                    <p className='text-blue-300 text-xs capitalize'>
+                      {userProfile?.risk_tolerance || 'moderate'} investor
+                    </p>
+                  </div>
+                  <button onClick={handleLogout}
+                    className='text-blue-200 hover:text-white p-2
+                      rounded-lg hover:bg-white/10 transition-colors'>
+                    <LogOut size={16} />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </nav>

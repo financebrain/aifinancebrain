@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
-import supabase from '@/lib/supabase'
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
 
 import { runMarketAgent } from '../../../agents/market-agent.js';
 import { runNewsAgent } from '../../../agents/news-agent.js';
@@ -10,20 +11,28 @@ import { runRiskAgent } from '../../../agents/risk-agent.js';
 
 export async function GET(request) {
   try {
-    // Delete today's insights to prevent duplicates
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+    const cookieStore = cookies()
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
+    const { data: { session } } = await supabase.auth.getSession()
+    const userId = session?.user?.id || null
+
+    // Delete only today's insights to prevent duplicates
+    // Keep older insights for the market brief history
+    const todayStart = new Date()
+    todayStart.setHours(0, 0, 0, 0)
     await supabase
       .from('insights')
       .delete()
-      .gte('created_at', today.toISOString())
+      .gte('created_at', todayStart.toISOString())
+
+    console.log('Cleared today insights, running fresh analysis...')
 
     const settled = await Promise.allSettled([
-      runMarketAgent(),
-      runNewsAgent(),
-      runSectorAgent(),
-      runOpportunityAgent(),
-      runRiskAgent(),
+      runMarketAgent(userId),
+      runNewsAgent(userId),
+      runSectorAgent(userId),
+      runOpportunityAgent(userId),
+      runRiskAgent(userId),
     ]);
 
     const toPayload = (result) => {
