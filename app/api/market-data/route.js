@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import yahooFinance from 'yahoo-finance2'
+import YahooFinance from 'yahoo-finance2'
+const yahooFinance = new YahooFinance()
 
 function safeNum(v) {
   const n = parseFloat(v)
