@@ -93,6 +93,7 @@ export default function Onboarding() {
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState({})
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
 
   function selectOption(questionId, value) {
     setAnswers((prev) => ({ ...prev, [questionId]: value }))
@@ -103,15 +104,28 @@ export default function Onboarding() {
 
   async function finish() {
     setSaving(true)
-    const { data: { user } } = await supabase.auth.getUser()
-    await supabase.from('profiles').upsert({
-      id: user.id,
-      risk_tolerance: answers.risk_tolerance,
-      investment_goal: answers.investment_goal,
-      experience_level: answers.experience_level,
-      onboarding_complete: true,
-    })
-    router.push('/')
+    setError('')
+    try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      if (userError) throw userError
+      if (!user?.id) throw new Error('Not logged in. Please sign in again.')
+
+      const { error: upsertError } = await supabase.from('profiles').upsert({
+        id: user.id,
+        risk_tolerance: answers.risk_tolerance,
+        investment_goal: answers.investment_goal,
+        experience_level: answers.experience_level,
+        onboarding_complete: true,
+      })
+      if (upsertError) throw upsertError
+
+      router.push('/')
+    } catch (e) {
+      console.log('Onboarding finish error:', e.message)
+      setError(e.message)
+    } finally {
+      setSaving(false)
+    }
   }
 
   const q = QUESTIONS[step]
@@ -181,6 +195,7 @@ export default function Onboarding() {
         </div>
 
         {isLastStep && allAnswered ? (
+          <>
           <button
             type="button"
             className="bg-[#1B2A4A] text-white w-full py-3 rounded-xl font-semibold mt-6 disabled:opacity-60 disabled:cursor-not-allowed"
@@ -189,6 +204,10 @@ export default function Onboarding() {
           >
             {saving ? 'Setting up your AI...' : 'Start My AI Financial Brain'}
           </button>
+          {error ? (
+            <p className="text-sm text-red-600 mt-3">{error}</p>
+          ) : null}
+          </>
         ) : null}
       </div>
     </div>
