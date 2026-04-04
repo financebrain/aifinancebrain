@@ -47,7 +47,7 @@ export default function AIInsightHero({ insight, isLoading }) {
         </div>
 
         <p className="text-blue-300 text-xs text-center">
-          Click &quot;Run AI Analysis&quot; above to get your first brief
+          {'Click "Run AI Analysis" above to get your first brief'}
         </p>
       </div>
     );

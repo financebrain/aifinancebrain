@@ -3,12 +3,28 @@
 import { useState } from 'react'
 import { Send, Bot, User } from 'lucide-react'
 
+function getGreeting() {
+  const hour = new Date().getHours()
+  if (hour < 12) return 'morning'
+  if (hour < 17) return 'afternoon'
+  return 'evening'
+}
+
 export default function Assistant() {
 const [messages, setMessages] = useState([
-{
-role: 'assistant',
-content: 'Hello! I am your AI Financial Brain assistant. Ask me anything about markets, sectors, or your portfolio.'
-}
+  {
+    role: 'assistant',
+    content: `Good ${getGreeting()}. I am your personal AI financial analyst.
+
+I have access to live NSE and BSE market data and your portfolio information. Here are some things you can ask me:
+
+- "What is happening in the market today?"
+- "Should I be worried about IT stocks?"  
+- "Where should I invest ₹5,000 this week?"
+- "Explain what Bank Nifty means for my money"
+
+What would you like to know?`,
+  },
 ])
 const [input, setInput] = useState('')
 const [isLoading, setIsLoading] = useState(false)
@@ -67,7 +83,7 @@ items-center justify-center flex-shrink-0">
 <div className={`max-w-[80%] px-4 py-3 rounded-xl text-sm
 ${msg.role === 'user'
 ? 'bg-[#1B2A4A] text-white rounded-br-none'
-: 'bg-gray-100 text-gray-800 rounded-bl-none'}`}>
+: 'bg-gray-100 text-gray-800 rounded-bl-none whitespace-pre-wrap'}`}>
 {msg.content}
 </div>
 {msg.role === 'user' && (
@@ -104,7 +120,7 @@ type="text"
 value={input}
 onChange={e => setInput(e.target.value)}
 onKeyDown={e => e.key === 'Enter' && sendMessage()}
-placeholder="Ask about markets, sectors, or investments..."
+placeholder="Ask anything — market trends, where to invest, what risks to watch..."
 className="flex-1 border border-gray-200 rounded-lg px-4 py-2
 text-sm focus:outline-none focus:border-blue-400"
 />

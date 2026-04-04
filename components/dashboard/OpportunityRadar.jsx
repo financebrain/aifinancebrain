@@ -40,8 +40,14 @@ export default function OpportunityRadar({ opportunities, isLoading }) {
             </div>
           </div>
         ) : safeOpps.length === 0 ? (
-          <div className="text-center text-gray-400 text-sm py-6">
-            No opportunities detected right now
+          <div className="p-6 text-center">
+            <div className="text-4xl mb-3">🔍</div>
+            <p className="text-gray-500 text-sm font-medium">
+              Scanning for opportunities...
+            </p>
+            <p className="text-gray-400 text-xs mt-1">
+              Click Run AI Analysis to detect high-confidence opportunities in today&apos;s market
+            </p>
           </div>
         ) : (
           <div>

@@ -47,11 +47,29 @@ export default function MarketSnapshot() {
 
   return (
     <div>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <div className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+          </div>
+          <span className="text-sm font-semibold text-[#1B2A4A]">
+            Live Markets
+          </span>
+        </div>
+        {lastFetch && (
+          <span className="text-xs text-gray-400">
+            Updated {lastFetch} IST
+          </span>
+        )}
+      </div>
       <div className="flex gap-3 overflow-x-auto pb-2">
         {indicators.map((ind, i) => (
-          <div key={i}
-            className="min-w-[130px] bg-white rounded-xl 
-              shadow-sm px-5 py-4 flex-shrink-0"
+          <div
+            key={i}
+            className={`min-w-[130px] bg-white rounded-xl shadow-sm px-5 py-4 flex-shrink-0 border-l-4 ${
+              ind.positive ? 'border-green-400' : 'border-red-400'
+            }`}
           >
             <p className="text-xs text-gray-500 uppercase 
               tracking-wide font-medium">
@@ -68,11 +86,6 @@ export default function MarketSnapshot() {
           </div>
         ))}
       </div>
-      {lastFetch && (
-        <p className="text-xs text-gray-400 mt-2 ml-1">
-          Last updated {lastFetch} IST
-        </p>
-      )}
     </div>
   )
 }

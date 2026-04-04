@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, ShieldAlert, ShieldCheck } from 'lucide-react';
+import { AlertTriangle, ShieldAlert } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 export default function RiskAlerts({ risks, isLoading }) {
@@ -40,11 +40,14 @@ export default function RiskAlerts({ risks, isLoading }) {
             </div>
           </div>
         ) : safeRisks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center text-center py-6">
-            <ShieldCheck className="h-6 w-6 text-green-600" />
-            <div className="text-green-600 text-sm font-medium mt-3">
-              No significant risks detected
-            </div>
+          <div className="p-6 text-center">
+            <div className="text-4xl mb-3">✅</div>
+            <p className="text-green-600 text-sm font-medium">
+              No alerts right now
+            </p>
+            <p className="text-gray-400 text-xs mt-1">
+              Run AI Analysis to check for risks in current market
+            </p>
           </div>
         ) : (
           <div>
