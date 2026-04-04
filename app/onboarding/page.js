@@ -1,5 +1,9 @@
 'use client'
 import { useState } from 'react'
+<<<<<<< HEAD
+=======
+import { useRouter } from 'next/navigation'
+>>>>>>> 3e09d0247db7c68b3c5df453e44ad3c460e724bc
 import supabase from '@/lib/supabase'
 
 const QUESTIONS = [
@@ -118,7 +122,11 @@ export default function Onboarding() {
       })
       if (upsertError) throw upsertError
 
+<<<<<<< HEAD
       window.location.href = '/'
+=======
+      router.push('/')
+>>>>>>> 3e09d0247db7c68b3c5df453e44ad3c460e724bc
     } catch (e) {
       console.log('Onboarding finish error:', e.message)
       setError(e.message)

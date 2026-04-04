@@ -32,6 +32,7 @@ export default function MarketSnapshot() {
     return () => clearInterval(t)
   }, [])
 
+<<<<<<< HEAD
   const header = (
     <div className="flex items-center justify-between mb-3">
       <div className="flex items-center gap-2">
@@ -63,12 +64,24 @@ export default function MarketSnapshot() {
             />
           ))}
         </div>
+=======
+  if (loading) {
+    return (
+      <div className="flex gap-3 overflow-x-auto pb-2">
+        {[1,2,3,4,5].map(i => (
+          <div key={i}
+            className="min-w-[130px] bg-white rounded-xl p-4 
+              shadow-sm animate-pulse h-20"
+          />
+        ))}
+>>>>>>> 3e09d0247db7c68b3c5df453e44ad3c460e724bc
       </div>
     )
   }
 
   return (
     <div>
+<<<<<<< HEAD
       {header}
       <div className="flex gap-3 overflow-x-auto pb-2">
         {indicators.map((ind, i) => (
@@ -77,6 +90,13 @@ export default function MarketSnapshot() {
             className={`min-w-[130px] bg-white rounded-xl shadow-sm px-5 py-4 flex-shrink-0 border-l-4 ${
               ind.positive ? 'border-green-400' : 'border-red-400'
             }`}
+=======
+      <div className="flex gap-3 overflow-x-auto pb-2">
+        {indicators.map((ind, i) => (
+          <div key={i}
+            className="min-w-[130px] bg-white rounded-xl 
+              shadow-sm px-5 py-4 flex-shrink-0"
+>>>>>>> 3e09d0247db7c68b3c5df453e44ad3c460e724bc
           >
             <p className="text-xs text-gray-500 uppercase 
               tracking-wide font-medium">
@@ -93,6 +113,14 @@ export default function MarketSnapshot() {
           </div>
         ))}
       </div>
+<<<<<<< HEAD
+=======
+      {lastFetch && (
+        <p className="text-xs text-gray-400 mt-2 ml-1">
+          Last updated {lastFetch} IST
+        </p>
+      )}
+>>>>>>> 3e09d0247db7c68b3c5df453e44ad3c460e724bc
     </div>
   )
 }

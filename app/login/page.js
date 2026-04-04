@@ -1,9 +1,18 @@
 'use client'
 import { useState } from 'react'
+<<<<<<< HEAD
+=======
+import { useRouter } from 'next/navigation'
+>>>>>>> 3e09d0247db7c68b3c5df453e44ad3c460e724bc
 import supabase from '@/lib/supabase'
 import { Brain, Mail, Lock, Eye, EyeOff } from 'lucide-react'
 
 export default function Login() {
+<<<<<<< HEAD
+=======
+  const router = useRouter()
+
+>>>>>>> 3e09d0247db7c68b3c5df453e44ad3c460e724bc
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isSignup, setIsSignup] = useState(false)
@@ -23,14 +32,22 @@ export default function Login() {
           options: { data: { full_name: email.split('@')[0] } },
         })
         if (error) throw error
+<<<<<<< HEAD
         window.location.href = '/onboarding'
+=======
+        router.push('/onboarding')
+>>>>>>> 3e09d0247db7c68b3c5df453e44ad3c460e724bc
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         })
         if (error) throw error
+<<<<<<< HEAD
         window.location.href = '/'
+=======
+        router.push('/')
+>>>>>>> 3e09d0247db7c68b3c5df453e44ad3c460e724bc
       }
     } catch (e) {
       setError(e.message)

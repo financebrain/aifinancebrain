@@ -1,4 +1,8 @@
 import React from 'react';
+<<<<<<< HEAD
+=======
+import { Sparkles } from 'lucide-react';
+>>>>>>> 3e09d0247db7c68b3c5df453e44ad3c460e724bc
 import { formatDistanceToNow } from 'date-fns';
 
 export default function AIInsightHero({ insight, isLoading }) {
@@ -12,6 +16,7 @@ export default function AIInsightHero({ insight, isLoading }) {
 
   if (!insight) {
     return (
+<<<<<<< HEAD
       <div className="bg-gradient-to-br from-[#1B2A4A] to-[#2563EB] rounded-2xl p-8 text-white">
         <div className="flex items-center gap-2 mb-6">
           <div className="relative flex h-3 w-3">
@@ -52,6 +57,13 @@ export default function AIInsightHero({ insight, isLoading }) {
         <p className="text-blue-300 text-xs text-center">
           Click &quot;Run AI Analysis&quot; above to get your first brief
         </p>
+=======
+      <div className="bg-white rounded-2xl p-10 shadow-md border border-blue-50 text-center">
+        <Sparkles className="mx-auto text-[#1B2A4A] h-10 w-10" />
+        <div className="mt-4 text-[#1B2A4A] font-semibold">
+          Run AI Analysis to get your first insight
+        </div>
+>>>>>>> 3e09d0247db7c68b3c5df453e44ad3c460e724bc
       </div>
     );
   }

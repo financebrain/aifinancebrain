@@ -92,6 +92,7 @@ export default function Home() {
   return (
     <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
       {/* Row 1 — Header */}
+<<<<<<< HEAD
       <div className="mb-6">
         <div className="flex items-start justify-between flex-wrap gap-4">
           <div>
@@ -132,6 +133,33 @@ export default function Home() {
                 IST
               </p>
             )}
+=======
+      <div className="flex flex-col gap-1">
+        <div className="flex items-end gap-3 flex-wrap">
+          <h1 className="text-3xl font-bold text-[#1B2A4A]">
+            {greeting}
+          </h1>
+          <span className="text-sm text-gray-400 mb-1 font-mono">
+            {clock}
+          </span>
+        </div>
+        <div className="mt-1 space-y-1">
+          <p className="text-gray-500">
+            Here is your AI financial brief for today.
+          </p>
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex 
+                h-full w-full rounded-full bg-green-400 opacity-75">
+              </span>
+              <span className="relative inline-flex rounded-full 
+                h-2 w-2 bg-green-500">
+              </span>
+            </span>
+            <span className="text-xs text-green-600 font-medium">
+              AI analyst active — monitoring Indian markets
+            </span>
+>>>>>>> 3e09d0247db7c68b3c5df453e44ad3c460e724bc
           </div>
         </div>
       </div>

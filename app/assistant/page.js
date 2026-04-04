@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Send, Bot, User } from 'lucide-react'
 
+<<<<<<< HEAD
 function getGreeting() {
   const hour = new Date().getHours()
   if (hour < 12) return 'morning'
@@ -26,6 +27,15 @@ I have access to live NSE and BSE market data and your portfolio information. He
 What would you like to know?`,
     },
   ])
+=======
+export default function Assistant() {
+const [messages, setMessages] = useState([
+{
+role: 'assistant',
+content: 'Hello! I am your AI Financial Brain assistant. Ask me anything about markets, sectors, or your portfolio.'
+}
+])
+>>>>>>> 3e09d0247db7c68b3c5df453e44ad3c460e724bc
 const [input, setInput] = useState('')
 const [isLoading, setIsLoading] = useState(false)
 
@@ -120,7 +130,11 @@ type="text"
 value={input}
 onChange={e => setInput(e.target.value)}
 onKeyDown={e => e.key === 'Enter' && sendMessage()}
+<<<<<<< HEAD
 placeholder="Ask anything — market trends, where to invest, what risks to watch..."
+=======
+placeholder="Ask about markets, sectors, or investments..."
+>>>>>>> 3e09d0247db7c68b3c5df453e44ad3c460e724bc
 className="flex-1 border border-gray-200 rounded-lg px-4 py-2
 text-sm focus:outline-none focus:border-blue-400"
 />
