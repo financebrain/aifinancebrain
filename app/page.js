@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import supabase from '@/lib/supabase'
 
@@ -25,45 +25,59 @@ export default function Home() {
     ['market', 'sector', 'news'].includes(i?.type),
   )
 
-  useEffect(() => {
-    let cancelled = false
-    let channel = null
-
-    const load = async () => {
+  const loadInsights = useCallback(async () => {
+    try {
       setIsLoading(true)
-      try {
-        const res = await fetch('/api/insights')
-        const json = await res.json()
-        if (cancelled) return
-        setInsights(Array.isArray(json?.data) ? json.data : [])
-      } catch {
-        if (cancelled) return
-        setInsights([])
-      } finally {
-        if (!cancelled) setIsLoading(false)
+      const res = await fetch('/api/insights')
+      const data = await res.json()
+      console.log('Insights loaded:', data)
+      if (data.success && Array.isArray(data.data)) {
+        setInsights(data.data)
       }
+    } catch (e) {
+      console.error('Failed to load insights:', e)
+    } finally {
+      setIsLoading(false)
     }
+  }, [])
 
-    load()
-    setLastUpdated(new Date().toLocaleTimeString())
+  useEffect(() => {
+    loadInsights()
 
-    channel = supabase
-      .channel('insights-changes')
+    const channel = supabase
+      .channel('insights-realtime')
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'insights' },
         (payload) => {
+          console.log('New insight:', payload.new)
           setInsights((prev) => [payload.new, ...prev].slice(0, 20))
-          setLastUpdated(new Date().toLocaleTimeString())
         },
       )
       .subscribe()
 
-    return () => {
-      cancelled = true
-      if (channel) supabase.removeChannel(channel)
+    return () => supabase.removeChannel(channel)
+  }, [loadInsights])
+
+  useEffect(() => {
+    const origFetch = window.fetch.bind(window)
+    window.fetch = async (...args) => {
+      const res = await origFetch(...args)
+      try {
+        const input = args[0]
+        const url = typeof input === 'string' ? input : input?.url ?? ''
+        if (String(url).includes('/api/run-all')) {
+          await loadInsights()
+        }
+      } catch {
+        /* ignore */
+      }
+      return res
     }
-  }, [])
+    return () => {
+      window.fetch = origFetch
+    }
+  }, [loadInsights])
 
   useEffect(() => {
     function tick() {
