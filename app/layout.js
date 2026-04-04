@@ -83,61 +83,72 @@ export default function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">
-        <nav className="fixed top-0 left-0 right-0 z-50 h-16 bg-[#1B2A4A]">
-          <div className="h-full max-w-6xl mx-auto px-4 flex items-center justify-between">
-            <div className="text-white font-bold text-xl">AI Financial Brain</div>
-
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-6">
-                <Link href="/" className="text-white hover:text-blue-300 text-sm">
+        <nav className="fixed top-0 left-0 right-0 z-50 
+          bg-[#1B2A4A] shadow-lg">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex items-center justify-between h-14">
+              
+              {/* Logo */}
+              <span className="text-white font-bold text-lg 
+                whitespace-nowrap">
+                AI Financial Brain
+              </span>
+              
+              {/* Desktop nav */}
+              <div className="hidden md:flex items-center gap-6">
+                <Link href="/" className="text-blue-200 
+                  hover:text-white text-sm transition-colors">
                   Dashboard
                 </Link>
-                <Link href="/market-brief" className="text-white hover:text-blue-300 text-sm">
+                <Link href="/market-brief" className="text-blue-200 
+                  hover:text-white text-sm transition-colors">
                   Market Brief
                 </Link>
-                <Link href="/portfolio" className="text-white hover:text-blue-300 text-sm">
+                <Link href="/portfolio" className="text-blue-200 
+                  hover:text-white text-sm transition-colors">
                   Portfolio
                 </Link>
-                <Link href="/assistant" className="text-white hover:text-blue-300 text-sm">
+                <Link href="/assistant" className="text-blue-200 
+                  hover:text-white text-sm transition-colors">
                   AI Assistant
                 </Link>
               </div>
 
-              <button
-                onClick={runAnalysis}
-                disabled={isRunning}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold
-                  transition-all ${isRunning
-                    ? 'bg-blue-400 cursor-not-allowed text-white'
-                    : 'bg-[#2563EB] hover:bg-blue-700 text-white'
-                  }`}
-              >
-                {isRunning ? runStatus || 'Running...' : 'Run AI Analysis'}
-              </button>
-
-              {user && (
-                <div className='flex items-center gap-3 ml-2'>
-                  <User size={16} className="text-blue-200 hidden md:block" />
-                  <div className='text-right hidden md:block'>
-                    <p className='text-white text-xs font-medium'>
-                      {userProfile?.full_name || user.email?.split('@')[0]}
-                    </p>
-                    <p className='text-blue-300 text-xs capitalize'>
-                      {userProfile?.risk_tolerance || 'moderate'} investor
-                    </p>
-                  </div>
-                  <button onClick={handleLogout}
-                    className='text-blue-200 hover:text-white p-2
-                      rounded-lg hover:bg-white/10 transition-colors'>
-                    <LogOut size={16} />
-                  </button>
+              {/* Right side */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={runAnalysis}
+                  disabled={isRunning}
+                  className={`px-3 py-1.5 rounded-lg text-xs 
+                    font-semibold transition-all whitespace-nowrap
+                    ${isRunning
+                      ? 'bg-blue-400 cursor-not-allowed text-white'
+                      : 'bg-[#2563EB] hover:bg-blue-700 text-white'
+                    }`}
+                >
+                  {isRunning 
+                    ? (runStatus || 'Running...') 
+                    : 'Run AI Analysis'}
+                </button>
+                
+                {/* Mobile menu - simple links */}
+                <div className="flex md:hidden items-center gap-3 
+                  ml-1">
+                  <Link href="/" className="text-blue-200 text-xs">
+                    Home
+                  </Link>
+                  <Link href="/assistant" className="text-blue-200 
+                    text-xs">
+                    Chat
+                  </Link>
                 </div>
-              )}
+              </div>
+              
             </div>
           </div>
         </nav>
 
-        <main className="bg-[#F8FAFC] min-h-screen pt-16">{children}</main>
+        <main className="bg-[#F8FAFC] min-h-screen pt-14">{children}</main>
       </body>
     </html>
   );

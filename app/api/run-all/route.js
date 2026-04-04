@@ -29,16 +29,22 @@ export async function GET(request) {
     const { data: { session } } = await supabase.auth.getSession()
     const userId = session?.user?.id || null
 
-    // Delete only today's insights to prevent duplicates
-    // Keep older insights for the market brief history
-    const todayStart = new Date()
-    todayStart.setHours(0, 0, 0, 0)
-    await supabase
+    // Delete ALL existing insights before generating fresh ones
+    const { error: deleteError } = await supabase
       .from('insights')
       .delete()
-      .gte('created_at', todayStart.toISOString())
+      .neq('id', '00000000-0000-0000-0000-000000000000')
 
-    console.log('Cleared today insights, running fresh analysis...')
+    if (deleteError) {
+      console.error('Delete error:', deleteError)
+    } else {
+      console.log('Cleared all old insights')
+    }
+
+    // Small delay to ensure deletion completes
+    await new Promise(resolve => setTimeout(resolve, 500))
+
+    // Then run all agents as normal
 
     const settled = await Promise.allSettled([
       runMarketAgent(userId),
