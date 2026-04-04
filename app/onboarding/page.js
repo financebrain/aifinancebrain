@@ -1,6 +1,5 @@
 'use client'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import supabase from '@/lib/supabase'
 
 const QUESTIONS = [
@@ -88,8 +87,6 @@ const QUESTIONS = [
 ]
 
 export default function Onboarding() {
-  const router = useRouter()
-
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState({})
   const [saving, setSaving] = useState(false)
@@ -119,7 +116,7 @@ export default function Onboarding() {
       })
       if (upsertError) throw upsertError
 
-      router.push('/')
+      window.location.href = '/'
     } catch (e) {
       console.log('Onboarding finish error:', e.message)
       setError(e.message)

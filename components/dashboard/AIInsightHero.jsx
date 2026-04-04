@@ -1,5 +1,4 @@
 import React from 'react';
-import { Sparkles } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 export default function AIInsightHero({ insight, isLoading }) {
@@ -13,11 +12,43 @@ export default function AIInsightHero({ insight, isLoading }) {
 
   if (!insight) {
     return (
-      <div className="bg-white rounded-2xl p-10 shadow-md border border-blue-50 text-center">
-        <Sparkles className="mx-auto text-[#1B2A4A] h-10 w-10" />
-        <div className="mt-4 text-[#1B2A4A] font-semibold">
-          Run AI Analysis to get your first insight
+      <div className="bg-gradient-to-br from-[#1B2A4A] to-[#2563EB] rounded-2xl p-8 text-white">
+        <div className="flex items-center gap-2 mb-6">
+          <div className="relative flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500" />
+          </div>
+          <span className="text-blue-200 text-sm font-medium">
+            AI analyst is ready
+          </span>
         </div>
+
+        <h2 className="text-2xl font-bold text-white mb-3">
+          Your AI financial brief is one click away.
+        </h2>
+
+        <p className="text-blue-100 text-sm leading-relaxed mb-6">
+          Our AI analyses live NSE and BSE data, scans financial news, and detects
+          opportunities and risks — then explains what it means for your money in plain
+          English.
+        </p>
+
+        <div className="grid grid-cols-3 gap-3 mb-6">
+          {[
+            { icon: '📊', text: 'Live market analysis' },
+            { icon: '🎯', text: 'Opportunity detection' },
+            { icon: '🛡️', text: 'Risk alerts' },
+          ].map((item, i) => (
+            <div key={i} className="bg-white/10 rounded-xl p-3 text-center">
+              <div className="text-2xl mb-1">{item.icon}</div>
+              <p className="text-blue-100 text-xs font-medium">{item.text}</p>
+            </div>
+          ))}
+        </div>
+
+        <p className="text-blue-300 text-xs text-center">
+          Click &quot;Run AI Analysis&quot; above to get your first brief
+        </p>
       </div>
     );
   }

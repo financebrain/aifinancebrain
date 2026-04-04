@@ -21,7 +21,8 @@ export async function middleware(req) {
     },
   )
   const { data: { session } } = await supabase.auth.getSession()
- 
+  console.log('Middleware running, session:', !!session)
+
   const { pathname } = req.nextUrl
  
   // Public routes — never redirect these
