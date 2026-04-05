@@ -7,17 +7,19 @@ export function personalizeDecision(finalDecision, userProfile) {
   const capital = userProfile.monthly_investment || 0;
   const goal = (userProfile.investment_goal || '').toLowerCase();
 
-  let minAllocPct = 25;
-  let maxAllocPct = 40;
+  let minAllocPct = finalDecision.minAlloc ?? 25;
+  let maxAllocPct = finalDecision.maxAlloc ?? 40;
   let toneText = '';
 
   if (risk === 'low') {
-    minAllocPct = 10;
-    maxAllocPct = 20;
+    // scale down
+    minAllocPct = Math.max(minAllocPct - 15, 10);
+    maxAllocPct = Math.max(maxAllocPct - 20, 20);
     toneText = 'Focus on capital protection. ';
   } else if (risk === 'high') {
-    minAllocPct = 40;
-    maxAllocPct = 60;
+    // scale up
+    minAllocPct = Math.min(minAllocPct + 15, 50);
+    maxAllocPct = Math.min(maxAllocPct + 20, 70);
     toneText = 'Adopt an aggressive stance. ';
   }
 

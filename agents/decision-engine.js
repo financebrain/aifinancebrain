@@ -126,26 +126,49 @@ export function buildFinalDecision({ market, news, sector, opportunity, risk }) 
   summaryText += mainStr + outperfStr;
 
   // 2. Macro confirmation (or warning)
-  const extractShortPhrase = (text) => {
-    if (!text) return 'mixed factors';
-    const clauses = text.split(/[,.;|]/);
-    let phrase = clauses[0].trim().toLowerCase();
-    const words = phrase.split(' ');
-    // Restrict string blob size from unformatted APIs
-    if (words.length > 6) {
-      phrase = words.slice(0, 5).join(' ') + '...';
-    }
-    return phrase;
-  };
+  // 2. Macro confirmation (or warning)
+  const text = (news?.summary || "").toLowerCase()
 
-  const macroPhrase = extractShortPhrase(newsData.reason);
-  
-  if (macroSentiment === 'bullish') {
-    summaryText += ` This move is supported by improving macro sentiment, including ${macroPhrase}.`;
-  } else if (macroSentiment === 'bearish') {
-    summaryText += ` Macro conditions remain weak due to ${macroPhrase}, which may limit upside.`;
+  const hasRecovery =
+    text.includes("rally") ||
+    text.includes("gain") ||
+    text.includes("gains") ||
+    text.includes("recovery") ||
+    text.includes("positive") ||
+    text.includes("losing streak")
+
+  const hasPolicy =
+    text.includes("rbi") ||
+    text.includes("central bank") ||
+    text.includes("rupee")
+
+  const hasRisk =
+    text.includes("uncertain") ||
+    text.includes("risk") ||
+    text.includes("concern")
+
+  let macro = ""
+
+  if (hasRecovery && hasPolicy) {
+    macro = "broader market recovery with policy support"
+  } else if (hasRecovery) {
+    macro = "broader market recovery momentum"
+  } else if (hasPolicy) {
+    macro = "policy-driven stability"
+  } else if (hasRisk) {
+    macro = "macro uncertainty"
   } else {
-    summaryText += ` Macro signals remain mixed, which may create uncertainty in continuation.`;
+    macro = "mixed macro signals"
+  }
+
+  console.log("MACRO SIGNAL:", macro)
+
+  if (macroSentiment === 'bullish') {
+    summaryText += ` This move is supported by improving macro sentiment, including ${macro}.`;
+  } else if (macroSentiment === 'bearish') {
+    summaryText += ` Macro conditions remain weak, including ${macro}, which may limit upside.`;
+  } else {
+    summaryText += ` Macro signals remain mixed, including ${macro}, which may create uncertainty in continuation.`;
   }
 
   // 3. Secondary sectors
@@ -195,14 +218,24 @@ export function buildFinalDecision({ market, news, sector, opportunity, risk }) 
      action = `Enter with 25–40% allocation. Avoid chasing the rally; add exclusively on consolidation.`;
   }
 
+  // Base Allocation logic parameterization
+  let minAlloc = 25;
+  let maxAlloc = 40;
+
   // Fundamental Constraints overriding Technical Actions
-  const hasMacroUncertainty = macroSentiment === 'bearish' || macroSentiment === 'neutral';
-  if (hasMacroUncertainty) {
-     // Throttle explicit allocation parameters mapped inside action strings
-     action = action.replace(/25–40%/g, '15–25%');
+  if (macro.includes("recovery")) {
+     minAlloc += 5;
+     maxAlloc += 5;
+     action += ` Momentum is supported by macro conditions.`;
+  } else if (macro.includes("uncertainty")) {
+     minAlloc -= 10;
+     maxAlloc -= 10;
      action = action.replace(/Aggressive entry/gi, 'Moderate entry');
-     action += ` Maintain cautious positioning due to macro uncertainty.`;
+     action += ` Maintain caution due to macro uncertainty.`;
   }
+
+  // Strip native text allocations entirely to prevent duplication downstream
+  action = action.replace(/Enter with \d+–\d+% allocation\.\s*/gi, '');
 
   const summary = `${summaryText} ${implicationText}`;
 
@@ -210,6 +243,8 @@ export function buildFinalDecision({ market, news, sector, opportunity, risk }) 
     title,
     summary,
     action,
-    confidence
+    confidence,
+    minAlloc,
+    maxAlloc
   };
 }
