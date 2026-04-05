@@ -1,4 +1,6 @@
 export function personalizeDecision(finalDecision, userProfile) {
+  if (finalDecision.beginner) return { ...finalDecision };
+  
   if (!userProfile) return { ...finalDecision, personalized: false };
 
   const personalized = { ...finalDecision };
