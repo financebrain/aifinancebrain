@@ -13,6 +13,17 @@ import { personalizeDecision } from '../../../agents/personalization-engine.js';
 import { applyPortfolioContext } from '../../../agents/portfolio-exposure-engine.js';
 import { v4 as uuidv4 } from 'uuid';
 
+async function getPrice(symbol) {
+  try {
+    const res = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.NS`);
+    const data = await res.json();
+    return data.chart?.result?.[0]?.meta?.regularMarketPrice || 0;
+  } catch (err) {
+    console.error(`Failed to fetch price for ${symbol}:`, err);
+    return 0;
+  }
+}
+
 export async function GET(request) {
   try {
     const cookieStore = await cookies()
@@ -33,7 +44,60 @@ export async function GET(request) {
     const { data: { session } } = await supabase.auth.getSession()
     const userId = session?.user?.id || null
 
+    let portfolio = {}
+    if (userId) {
+      const { data: holdings, error } = await supabase
+        .from('holdings')
+        .select('*')
+        .eq('user_id', userId)
+
+      const stockToSector = {
+        INFY: "IT",
+        TCS: "IT",
+        WIPRO: "IT",
+
+        HDFCBANK: "Banking",
+        ICICIBANK: "Banking",
+        SBIN: "Banking",
+
+        SUNPHARMA: "Pharma",
+        DRREDDY: "Pharma",
+
+        RELIANCE: "Energy",
+        ONGC: "Energy"
+      }
+
+      for (const h of (holdings || [])) {
+        const symbol = h.symbol;
+        const qty = Array.isArray(h.quantity) || typeof h.quantity === 'undefined' ? 0 : h.quantity;
+
+        const sector = stockToSector[symbol];
+        if (!sector) continue;
+
+        const price = await getPrice(symbol);
+        const value = price * qty;
+
+        if (!portfolio[sector]) {
+          portfolio[sector] = 0;
+        }
+
+        portfolio[sector] += value;
+      }
+
+      const total = Object.values(portfolio).reduce((a, b) => a + b, 0)
+
+      if (total > 0) {
+        Object.keys(portfolio).forEach(sector => {
+          portfolio[sector] = Math.round((portfolio[sector] / total) * 100)
+        })
+      }
+    }
+
+    console.log("FINAL PORTFOLIO:", portfolio)
+
     const runId = uuidv4();
+
+    console.log("RUNNING AGENTS...")
 
     const settled = await Promise.allSettled([
       runMarketAgent(userId, runId),
@@ -43,19 +107,29 @@ export async function GET(request) {
       runRiskAgent(userId, runId),
     ]);
 
+    console.log("RAW RESULTS:", settled)
+
     const toPayload = (result) => {
       if (result.status === 'fulfilled') return result.value;
-      return { error: result.reason?.message };
+
+      console.error("AGENT ERROR:", result.reason);
+
+      return {
+        error: result.reason?.message || "Unknown error"
+      };
     };
 
     const [market, news, sector, opportunity, risk] = settled.map(toPayload);
+
+
 
     const finalDecision = buildFinalDecision({
       market,
       news,
       sector,
       opportunity,
-      risk
+      risk,
+      portfolio
     });
 
     let userProfile = null;
@@ -92,6 +166,11 @@ export async function GET(request) {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error("ROUTE ERROR:", error);
+
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 }
+    );
   }
 }

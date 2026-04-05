@@ -1,4 +1,4 @@
-export function buildFinalDecision({ market, news, sector, opportunity, risk }) {
+export function buildFinalDecision({ market, news, sector, opportunity, risk, portfolio = {} }) {
   const marketData = market || {};
   const newsData = news || {};
   const sectorData = sector || {};
@@ -129,36 +129,29 @@ export function buildFinalDecision({ market, news, sector, opportunity, risk }) 
   // 2. Macro confirmation (or warning)
   const text = (news?.summary || "").toLowerCase()
 
-  const hasRecovery =
-    text.includes("rally") ||
-    text.includes("gain") ||
-    text.includes("gains") ||
-    text.includes("recovery") ||
-    text.includes("positive") ||
-    text.includes("losing streak")
+  let bullishScore = 0;
+  let bearishScore = 0;
 
-  const hasPolicy =
-    text.includes("rbi") ||
-    text.includes("central bank") ||
-    text.includes("rupee")
+  if (text.includes("gain") || text.includes("gains")) bullishScore++;
+  if (text.includes("strong")) bullishScore++;
+  if (text.includes("rally")) bullishScore++;
+  if (text.includes("recovery")) bullishScore++;
 
-  const hasRisk =
-    text.includes("uncertain") ||
-    text.includes("risk") ||
-    text.includes("concern")
+  if (text.includes("weak")) bearishScore++;
+  if (text.includes("decline")) bearishScore++;
+  if (text.includes("uncertain")) bearishScore++;
+  if (text.includes("risk")) bearishScore++;
 
-  let macro = ""
+  let macro = "";
 
-  if (hasRecovery && hasPolicy) {
-    macro = "broader market recovery with policy support"
-  } else if (hasRecovery) {
-    macro = "broader market recovery momentum"
-  } else if (hasPolicy) {
-    macro = "policy-driven stability"
-  } else if (hasRisk) {
-    macro = "macro uncertainty"
+  if (text.includes("rally") || text.includes("recovery")) {
+    macro = "broader market recovery momentum";
+  } else if (bullishScore > bearishScore) {
+    macro = "moderately positive macro sentiment";
+  } else if (bearishScore > bullishScore) {
+    macro = "macro pressure and uncertainty";
   } else {
-    macro = "mixed macro signals"
+    macro = "mixed macro signals";
   }
 
   console.log("MACRO SIGNAL:", macro)
@@ -195,15 +188,15 @@ export function buildFinalDecision({ market, news, sector, opportunity, risk }) 
 
   if (topWeight === 'STRONG') {
      title = `Dominant ${strongestSector} Breakout`;
-     implicationText = `The absolute magnitude of this move confirms strong structural momentum and institutional focus.`;
+     implicationText = `The magnitude of the move indicates strong short-term momentum.`;
      action = `Consider aggressive entry or scaling up allocations specifically in ${strongestSector} leading names.`;
   } else if (topWeight === 'MEDIUM') {
      title = `Steady ${strongestSector} Leadership`;
-     implicationText = `Trends suggest constructive rotation with moderate conviction.`;
+     implicationText = `Shows strong relative strength today.`;
      action = `Opportunistic buying in ${strongestSector} on dips supported. Maintain core holdings.`;
   } else {
      title = `Indecisive Market Rotation`;
-     implicationText = `Fragmented leadership implies lack of broad institutional conviction.`;
+     implicationText = `Fragmented leadership implies lack of broad momentum.`;
      action = `Avoid chasing breakouts. Focus strictly on defensive positioning until a clear leader emerges.`;
   }
 
@@ -237,7 +230,45 @@ export function buildFinalDecision({ market, news, sector, opportunity, risk }) 
   // Strip native text allocations entirely to prevent duplication downstream
   action = action.replace(/Enter with \d+–\d+% allocation\.\s*/gi, '');
 
-  const summary = `${summaryText} ${implicationText}`;
+  // PORTFOLIO EXPOSURE LOGIC
+  console.log("PORTFOLIO RECEIVED:", portfolio);
+  console.log("TOP SECTOR:", strongestSector);
+
+  const exposure = portfolio[strongestSector] || 0;
+  console.log("EXPOSURE:", exposure);
+
+  if (exposure >= 60) {
+     minAlloc = 0;
+     maxAlloc = 10;
+     if (secondSector) {
+         action = `Critically overexposed to ${strongestSector}. Halt new allocations. Pivot to ${secondSector} (second strongest sector ${secondSectorChangeStr}) for structural risk management.`;
+     } else {
+         action = `Critically overexposed to ${strongestSector}. Halt new allocations. Pivot to diversification for structural risk management.`;
+     }
+  } else if (exposure >= 40) {
+     minAlloc = 5;
+     maxAlloc = 15;
+     if (secondSector) {
+         action = `High existing exposure to ${strongestSector}. Avoid adding aggressively. Consider ${secondSector} (second strongest sector ${secondSectorChangeStr}) as a better risk-adjusted alternative.`;
+     } else {
+         action = `High existing exposure to ${strongestSector}. Avoid adding aggressively. Consider diversification as a better risk-adjusted alternative.`;
+     }
+  } else if (exposure >= 20) {
+     minAlloc = 15;
+     maxAlloc = 25;
+     action += ` Moderate existing exposure. Add cautiously on strong dips.`;
+  } else {
+     minAlloc = 25;
+     maxAlloc = 40;
+     action += ` Opportunity to aggressively build structural exposure in ${strongestSector} sector.`;
+  }
+
+  let summary = `${summaryText} ${implicationText}`.trim();
+  const safeBase = summary || "";
+
+  if (!safeBase || safeBase === "undefined") {
+    summary = "Market shows mixed signals. Focus on disciplined execution.";
+  }
 
   return {
     title,
