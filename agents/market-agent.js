@@ -3,7 +3,7 @@ import { callGemini } from '../lib/gemini.js';
 import supabase from '../lib/supabase.js';
 import { getUserContext } from '../lib/user-context.js'
 
-export async function runMarketAgent(userId = null) {
+export async function runMarketAgent(userId = null, runId = null) {
   // Step 1: Fetch raw market data
   const [niftyData, sectors] = await Promise.all([fetchNiftyData(), fetchTopSectors()]);
 
@@ -52,6 +52,7 @@ ${userContext}`;
     reason: parsed.summary,
     confidence: parsed.confidence,
     suggested_action: parsed.suggested_action,
+    run_id: runId,
     raw_data: {
       niftyData,
       sectors,

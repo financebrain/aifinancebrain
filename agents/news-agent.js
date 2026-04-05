@@ -3,7 +3,7 @@ import { callGemini } from '../lib/gemini.js';
 import supabase from '../lib/supabase.js';
 import { getUserContext } from '../lib/user-context.js'
 
-export async function runNewsAgent(userId = null) {
+export async function runNewsAgent(userId = null, runId = null) {
   // Step 1: Fetch raw market data
   const headlines = await fetchFinancialNews();
 
@@ -42,6 +42,7 @@ ${userContext}`;
     reason: parsed.summary,
     confidence: parsed.confidence,
     suggested_action: parsed.suggested_action,
+    run_id: runId,
     raw_data: {
       headlines,
       impacted_sectors: parsed.impacted_sectors,

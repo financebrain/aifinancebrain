@@ -8,6 +8,7 @@ import { runNewsAgent } from '../../../agents/news-agent.js';
 import { runSectorAgent } from '../../../agents/sector-agent.js';
 import { runOpportunityAgent } from '../../../agents/opportunity-agent.js';
 import { runRiskAgent } from '../../../agents/risk-agent.js';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function GET(request) {
   try {
@@ -29,29 +30,14 @@ export async function GET(request) {
     const { data: { session } } = await supabase.auth.getSession()
     const userId = session?.user?.id || null
 
-    // Delete ALL existing insights before generating fresh ones
-    const { error: deleteError } = await supabase
-      .from('insights')
-      .delete()
-      .neq('id', '00000000-0000-0000-0000-000000000000')
-
-    if (deleteError) {
-      console.error('Delete error:', deleteError)
-    } else {
-      console.log('Cleared all old insights')
-    }
-
-    // Small delay to ensure deletion completes
-    await new Promise(resolve => setTimeout(resolve, 500))
-
-    // Then run all agents as normal
+    const runId = uuidv4();
 
     const settled = await Promise.allSettled([
-      runMarketAgent(userId),
-      runNewsAgent(userId),
-      runSectorAgent(userId),
-      runOpportunityAgent(userId),
-      runRiskAgent(userId),
+      runMarketAgent(userId, runId),
+      runNewsAgent(userId, runId),
+      runSectorAgent(userId, runId),
+      runOpportunityAgent(userId, runId),
+      runRiskAgent(userId, runId),
     ]);
 
     const toPayload = (result) => {

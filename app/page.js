@@ -50,8 +50,10 @@ export default function Home() {
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'insights' },
         (payload) => {
-          console.log('New insight:', payload.new)
-          setInsights((prev) => [payload.new, ...prev].slice(0, 20))
+          console.log('New insight detected, reloading...')
+          // Instead of mixing old and new state, we rely on the backend's
+          // get-latest-run grouping to naturally roll into the newest data:
+          loadInsights()
         },
       )
       .subscribe()
