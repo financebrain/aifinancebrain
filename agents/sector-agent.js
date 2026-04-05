@@ -1,11 +1,13 @@
-import { fetchNiftyData, fetchTopSectors } from '../lib/data-fetcher.js';
+import { getMarketData } from '../lib/data-provider.js';
 import { callGemini } from '../lib/gemini.js';
 import supabase from '../lib/supabase.js';
 import { getUserContext } from '../lib/user-context.js'
 
 export async function runSectorAgent(userId = null, runId = null) {
   // Step 1: Fetch raw market data
-  const [sectors, niftyData] = await Promise.all([fetchTopSectors(), fetchNiftyData()]);
+  const data = await getMarketData();
+  const niftyData = data.nifty;
+  const sectors = data.sectors;
 
   // Step 2: Build Gemini prompt
   const userContext = await getUserContext(userId)
@@ -23,6 +25,8 @@ Respond ONLY with valid JSON, no markdown:
   "title": "sector theme in 4-6 words",
   "top_sector": "name of strongest sector",
   "top_sector_reason": "specific sentence with exact percentage why this sector leads",
+  "second_sector": "name of second strongest sector",
+  "second_sector_reason": "specific sentence with percentage",
   "weak_sector": "name of weakest sector", 
   "weak_sector_reason": "specific sentence with exact percentage",
   "rotation_signal": "one sentence on where money is moving today with numbers",
@@ -55,6 +59,8 @@ ${userContext}`;
       sectors,
       top_sector: parsed.top_sector,
       top_sector_reason: parsed.top_sector_reason,
+      second_sector: parsed.second_sector,
+      second_sector_reason: parsed.second_sector_reason,
       weak_sector: parsed.weak_sector,
       weak_sector_reason: parsed.weak_sector_reason,
       rotation_signal: parsed.rotation_signal,

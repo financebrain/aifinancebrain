@@ -19,6 +19,7 @@ export default function Home() {
   const [greeting, setGreeting] = useState('Good morning.')
 
   const heroInsight = insights.find((i) => i?.type === 'market') || null
+  const decisionInsight = insights.find((i) => i?.type === 'decision') || null
   const opportunities = insights.filter((i) => i?.type === 'opportunity')
   const risks = insights.filter((i) => i?.type === 'risk')
   const marketInsights = insights.filter((i) =>
@@ -148,6 +149,24 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* AI Final Decision Row */}
+      {decisionInsight && (
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 shadow-sm">
+          <div className="flex items-center gap-2 mb-3">
+            <h2 className="text-xl font-bold text-blue-900">AI Decision (Personalized for You): {decisionInsight.title}</h2>
+          </div>
+          <p className="text-blue-800 mb-5 leading-relaxed">{decisionInsight.reason}</p>
+          <div className="flex flex-wrap gap-4 items-center">
+            <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold uppercase tracking-wider">
+              Confidence: {decisionInsight.confidence}
+            </span>
+            <span className="text-sm font-medium text-blue-900 bg-white px-3 py-1 rounded-md border border-blue-100">
+              Action: {decisionInsight.suggested_action}
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Row 2 — Market Snapshot */}
       <MarketSnapshot />

@@ -1,11 +1,13 @@
-import { fetchNiftyData, fetchTopSectors } from '../lib/data-fetcher.js';
+import { getMarketData } from '../lib/data-provider.js';
 import { callGemini } from '../lib/gemini.js';
 import supabase from '../lib/supabase.js';
 import { getUserContext } from '../lib/user-context.js'
 
 export async function runRiskAgent(userId = null, runId = null) {
   // Step 1: Fetch raw market data
-  const [sectors, niftyData] = await Promise.all([fetchTopSectors(), fetchNiftyData()]);
+  const data = await getMarketData();
+  const niftyData = data.nifty;
+  const sectors = data.sectors;
 
   // Step 2: Build Gemini prompt
   const userContext = await getUserContext(userId)

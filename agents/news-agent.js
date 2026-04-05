@@ -1,17 +1,20 @@
-import { fetchFinancialNews } from '../lib/data-fetcher.js';
+import { getNewsData } from '../lib/news-provider.js';
 import { callGemini } from '../lib/gemini.js';
 import supabase from '../lib/supabase.js';
 import { getUserContext } from '../lib/user-context.js'
 
 export async function runNewsAgent(userId = null, runId = null) {
   // Step 1: Fetch raw market data
-  const headlines = await fetchFinancialNews();
+  const news = await getNewsData();
+  
+  // Format with embedded sentiment to guide LLM logic
+  const headlinesText = news.map(n => `[${n.sentiment.toUpperCase()}] ${n.title} (Source: ${n.source})`).join(' | ');
 
   // Step 2: Build Gemini prompt
-  const userContext = await getUserContext(userId)
+  const userContext = await getUserContext(userId);
   const prompt = `You are a senior financial news analyst for India.
    Analyze these market headlines and extract key signals.
-   Headlines: ${headlines.join(' | ')}
+   Headlines: ${headlinesText}
    
    Respond ONLY with valid JSON, no markdown:
    {
@@ -44,7 +47,7 @@ ${userContext}`;
     suggested_action: parsed.suggested_action,
     run_id: runId,
     raw_data: {
-      headlines,
+      headlines: news,
       impacted_sectors: parsed.impacted_sectors,
       sentiment: parsed.sentiment,
     },
