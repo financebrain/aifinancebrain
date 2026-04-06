@@ -23,6 +23,11 @@ Be specific — name actual ETFs available in India like:
 Nifty 50 Index ETF, Bank Nifty ETF, Nippon India Banking ETF,
 ICICI Prudential IT ETF, Kotak Gold ETF, etc.
 
+TONE CONSTRAINTS - STRICTLY ENFORCED:
+- Ensure all outputs align with a calm financial advisory tone.
+- NEVER use phrases like "strong buy", "best stock", "short sell", or "don't miss opportunity".
+- INSTEAD, use phrases like: "can be considered", "showing strength", "monitor closely", or "may present opportunity" where appropriate.
+
 Respond ONLY with valid JSON, no markdown:
 {
   "title": "specific opportunity headline (max 8 words)",
@@ -30,7 +35,7 @@ Respond ONLY with valid JSON, no markdown:
   "reason": "2 specific sentences with real numbers explaining why this is an opportunity RIGHT NOW",
   "confidence": "high or medium or low",
   "time_horizon": "short-term (days) or medium-term (weeks)",
-  "suggested_action": "specific plain English action with rupee amount example like: Consider allocating ₹3,000-5,000 to..."
+  "suggested_action": "specific plain English action like: 'This sector is showing strength' or 'May be monitored for potential exposure'. DO NOT suggest allocating specific ₹ ranges."
 }
 ${userContext}`;
 

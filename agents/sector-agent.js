@@ -20,6 +20,11 @@ Today's data:
 Identify which sectors are gaining and losing investor interest today.
 Be specific with actual percentage numbers from the data above.
 
+TONE CONSTRAINTS - STRICTLY ENFORCED:
+- Ensure all outputs align with a calm, observational financial tone. Keep it observational, not instructional.
+- NEVER use phrases like "strong buy", "best stock", "consider allocating", "invest in", "short sell", or "don't miss opportunity".
+- INSTEAD, use phrases like: "showing strength", "gaining attention", "monitor closely", or "can be monitored" where appropriate.
+
 Respond ONLY with valid JSON, no markdown:
 {
   "title": "sector theme in 4-6 words",
@@ -31,7 +36,7 @@ Respond ONLY with valid JSON, no markdown:
   "weak_sector_reason": "specific sentence with exact percentage",
   "rotation_signal": "one sentence on where money is moving today with numbers",
   "confidence": "high or medium or low",
-  "suggested_action": "specific action mentioning actual sector names and ETFs"
+  "suggested_action": "specific observational action like 'This sector is showing strength' or 'Sector can be monitored'. DO NOT suggest allocating money or investing."
 }
 ${userContext}`;
 

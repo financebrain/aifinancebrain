@@ -27,26 +27,14 @@ export function applyPortfolioContext(personalizedDecision, portfolios, topSecto
   if (sectorExposure > 40) {
     const updated = { ...personalizedDecision };
     const exposureRounded = Math.round(sectorExposure);
-    let matched = false;
 
-    // We locate the exact string injected by the personalization engine 
-    // to dynamically throttle the recommended cash amount down to the minimum bracket
-    updated.action = updated.action.replace(/Allocate (\d+)–(\d+)%\s*\((₹[^)]+)[^)]*\)\.\s*/i, (match, minPct, maxPct, minAmt) => {
-      matched = true;
-      // Truncate out the max range and just recommend the strict minimum or diversification
-      return `You already have high ${cleanTopSector} exposure (${exposureRounded}%). Limit new allocation to ${minAmt} or diversify. `;
-    });
-
-    if (!matched) {
-      updated.action = updated.action.replace(/Allocate (\d+)–(\d+)%\.\s*/i, (match, minPct, maxPct) => {
-        matched = true;
-        return `You already have high ${cleanTopSector} exposure (${exposureRounded}%). Limit new allocation size drastically or diversify. `;
-      });
-    }
-
-    if (!matched && !updated.action.toLowerCase().includes('avoid')) {
-      updated.action = `You already have high ${cleanTopSector} exposure (${exposureRounded}%). Limit new allocation or diversify. ` + updated.action;
-    }
+    // STRICT PORTFOLIO OVERRIDE
+    updated.action_type = "hold";
+    updated.urgency = "medium";
+    updated.allocation_hint = null; // strip any pre-set hints
+    updated.action = "Maintain current allocations and observe parameters.";
+    updated.impact_on_user = `You possess dangerously high exposure to ${cleanTopSector} (${exposureRounded}%). Restrict new structural buy orders to preserve asset diversification.`;
+    updated.next_step = `Maintain exact current positioning without making any sudden risk-adjustments.`;
 
     updated.portfolio_adjusted = true;
     return updated;

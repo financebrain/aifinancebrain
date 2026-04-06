@@ -22,6 +22,11 @@ Identify the most important risk signal in today's market.
 If markets look genuinely stable, say so with low confidence.
 Never manufacture risks that are not in the data.
 
+TONE CONSTRAINTS - STRICTLY ENFORCED:
+- Ensure all outputs align with a calm financial advisory tone.
+- NEVER use phrases like "strong buy", "best stock", "short sell", or "don't miss opportunity".
+- INSTEAD, use phrases like: "can be considered", "showing strength", "monitor closely", or "may present opportunity" where appropriate.
+
 Respond ONLY with valid JSON, no markdown:
 {
   "title": "risk headline under 8 words",

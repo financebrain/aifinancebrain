@@ -23,6 +23,11 @@ Today's market data:
 Write as a trusted advisor. Be specific with real numbers.
 Explain what this means for a regular investor in plain English.
 
+TONE CONSTRAINTS - STRICTLY ENFORCED:
+- Ensure all outputs align with a calm financial advisory tone.
+- NEVER use phrases like "strong buy", "best stock", "short sell", or "don't miss opportunity".
+- INSTEAD, use phrases like: "can be considered", "showing strength", "monitor closely", or "may present opportunity" where appropriate.
+
 Respond ONLY with valid JSON, absolutely no markdown or extra text:
 {
   "title": "punchy headline capturing today's key theme (max 8 words)",

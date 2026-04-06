@@ -24,35 +24,7 @@ async function getPrice(symbol) {
   }
 }
 
-function buildBeginnerDecision(market, sector, news, risk) {
-  const sentiment = (news?.sentiment || "neutral").toLowerCase();
-  
-  let actionStr = `Start with ₹1000–₹2000
-Focus: ${sector?.top_sector || 'IT'} (primary), ${sector?.second_sector || 'Banking'} (safer alternative)`;
-  let riskStr = "medium";
 
-  if (sentiment === "bearish") {
-    actionStr = `Start small: ₹500–₹1000
-Focus: ${sector?.top_sector || 'IT'} (avoid aggressive entry)`;
-    riskStr = "high";
-  } else if (sentiment === "bullish") {
-    actionStr = `Start confidently with ₹1500–₹2500
-Focus: ${sector?.top_sector || 'IT'} (momentum breakout)`;
-    riskStr = "medium";
-  }
-
-  return {
-    title: "Start Your Portfolio Today",
-    summary: market?.summary || "Market conditions are prime for initiating long-term structured capital deployment.",
-    action: actionStr,
-    risk: riskStr,
-    reasoning: `${sector?.top_sector || "IT"} is the strongest sector today (${sector?.top_sector_reason || 'strong overall momentum'})`,
-    why_now: `Market is showing positive momentum with ${sector?.top_sector || 'IT'} leading`,
-    confidence: "medium",
-    beginner: true,
-    personalized: false
-  }
-}
 
 export async function GET(request) {
   try {
@@ -78,8 +50,16 @@ export async function GET(request) {
     if (userId) {
       const { data: holdings, error } = await supabase
         .from('holdings')
-        .select('*')
+        .select('symbol, quantity')
         .eq('user_id', userId)
+
+      console.log("HOLDINGS:", holdings);
+
+      if (error) {
+        console.error("Error fetching holdings:", error);
+      }
+
+
 
       const stockToSector = {
         INFY: "IT",
@@ -123,16 +103,12 @@ export async function GET(request) {
       }
     }
 
-    console.log("FINAL PORTFOLIO:", portfolio)
-
-    let isBeginner;
-    if (!portfolio || Object.keys(portfolio).length === 0) {
-      isBeginner = true;
-    } else {
-      isBeginner = false;
+    if (Object.keys(portfolio).length === 0) {
+       console.log("BEGINNER MODE ACTIVE");
     }
-    
-    console.log("BEGINNER MODE:", isBeginner)
+
+    console.log("PORTFOLIO BUILT:");
+    console.log("SECTOR EXPOSURE:", portfolio);
 
     const runId = uuidv4();
 
@@ -162,19 +138,15 @@ export async function GET(request) {
 
 
 
-    let finalDecision;
-    if (isBeginner) {
-      finalDecision = buildBeginnerDecision(market, sector, news, risk);
-    } else {
-      finalDecision = buildFinalDecision({
-        market,
-        news,
-        sector,
-        opportunity,
-        risk,
-        portfolio
-      });
-    }
+    console.log("PORTFOLIO PASSED TO DECISION ENGINE");
+    const finalDecision = buildFinalDecision({
+      market,
+      news,
+      sector,
+      opportunity,
+      risk,
+      portfolio
+    });
 
     let userProfile = null;
     let userPortfolios = [];
@@ -195,8 +167,8 @@ export async function GET(request) {
 
     await supabase.from('insights').insert({
       type: 'decision',
-      title: personalizedDecision.title,
-      reason: personalizedDecision.summary,
+      title: 'Market Assessment Framework',
+      reason: personalizedDecision.insight,
       confidence: personalizedDecision.confidence,
       suggested_action: personalizedDecision.action,
       run_id: runId,
