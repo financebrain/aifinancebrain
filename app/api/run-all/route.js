@@ -11,6 +11,7 @@ import { runRiskAgent } from '../../../agents/risk-agent.js';
 import { buildFinalDecision } from '../../../agents/decision-engine.js';
 import { personalizeDecision } from '../../../agents/personalization-engine.js';
 import { applyPortfolioContext } from '../../../agents/portfolio-exposure-engine.js';
+import { saveDecisionHistory, getDynamicWeights } from '../../../lib/decision-memory.js';
 import { v4 as uuidv4 } from 'uuid';
 
 async function getPrice(symbol) {
@@ -139,14 +140,46 @@ export async function GET(request) {
 
 
     console.log("PORTFOLIO PASSED TO DECISION ENGINE");
+    let weights = null;
+    try {
+      weights = await getDynamicWeights();
+    } catch (error) {
+      console.error('Failed to compute dynamic weights:', error);
+      weights = null;
+    }
+
     const finalDecision = buildFinalDecision({
       market,
       news,
       sector,
       opportunity,
       risk,
-      portfolio
+      portfolio,
+      weights
     });
+
+    // Extract inputs for decision memory tracking
+    const marketSentiment = (news?.sentiment || 'neutral').toLowerCase();
+    const riskLevel = (risk?.severity || 'low').toLowerCase();
+    const strongestSectorRaw = sector?.top_sector || 'Top Sector';
+    const strongestSector = strongestSectorRaw.replace(/\s+Index$/i, '').trim();
+    const exposure = portfolio[strongestSector] || 0;
+
+    // Get entry price from Nifty for decision tracking
+    const entryPrice = await getPrice('^NSEI'); // Nifty 50 index
+
+    // Save decision to memory system (async, non-blocking)
+    if (userId && finalDecision) {
+      saveDecisionHistory(userId, finalDecision, {
+        marketSentiment,
+        sector: strongestSector,
+        riskLevel,
+        exposure
+      }, entryPrice).catch(error => {
+        console.error('Failed to save decision history:', error);
+        // Don't crash the API if memory system fails
+      });
+    }
 
     let userProfile = null;
     let userPortfolios = [];

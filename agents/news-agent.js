@@ -2,6 +2,7 @@ import { getNewsData } from '../lib/news-provider.js';
 import { callGemini } from '../lib/gemini.js';
 import supabase from '../lib/supabase.js';
 import { getUserContext } from '../lib/user-context.js'
+import { cleanAndParseJSON, validateJSONStructure } from '../lib/json-utils.js'
 
 export async function runNewsAgent(userId = null, runId = null) {
   // Step 1: Fetch raw market data
@@ -31,11 +32,15 @@ ${userContext}`;
   const rawResponse = await callGemini(prompt);
 
   // Step 4: Parse JSON response
-  let parsed;
-  try {
-    parsed = JSON.parse(rawResponse);
-  } catch {
-    throw new Error('Gemini response not valid JSON');
+  const parsed = cleanAndParseJSON(rawResponse);
+
+  if (!parsed) {
+    throw new Error('Failed to parse Gemini response as valid JSON');
+  }
+
+  // Validate required fields
+  if (!validateJSONStructure(parsed, ['title', 'summary', 'sentiment', 'confidence', 'suggested_action'])) {
+    throw new Error('Gemini response missing required fields');
   }
 
   // Step 5: Store in Supabase
