@@ -1,3 +1,5 @@
+import { getSignalPatterns } from '@/lib/decision-memory.js';
+
 export function buildFinalDecision({ market, news, sector, opportunity, risk, portfolio = {}, weights = null }) {
   // Extract inputs for scoring system
   const marketSentiment = (news?.sentiment || 'neutral').toLowerCase();
@@ -186,11 +188,12 @@ function convertToScores({ marketSentiment, sectorStrength, riskLevel, exposure 
 
 // Calculate weighted score
 function calculateScore(inputs, weights = DEFAULT_DECISION_WEIGHTS) {
+  const safeWeights = weights ?? DEFAULT_DECISION_WEIGHTS;
   const scoreWeights = {
-    market: weights.market ?? DEFAULT_DECISION_WEIGHTS.market,
-    sector: weights.sector ?? DEFAULT_DECISION_WEIGHTS.sector,
-    risk: weights.risk ?? DEFAULT_DECISION_WEIGHTS.risk,
-    portfolio: weights.portfolio ?? DEFAULT_DECISION_WEIGHTS.portfolio
+    market: safeWeights.market ?? DEFAULT_DECISION_WEIGHTS.market,
+    sector: safeWeights.sector ?? DEFAULT_DECISION_WEIGHTS.sector,
+    risk: safeWeights.risk ?? DEFAULT_DECISION_WEIGHTS.risk,
+    portfolio: safeWeights.portfolio ?? DEFAULT_DECISION_WEIGHTS.portfolio
   };
 
   const scores = convertToScores(inputs);
@@ -349,38 +352,36 @@ function applyScorePenalties(result, inputs) {
   };
 }
 
+// Calculate conflict score based on contribution dispersion
+function calculateConflictScore(contributions) {
+  const values = [contributions.market, contributions.sector, contributions.risk];
+  const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
+  const variance = values.reduce((sum, value) => sum + Math.pow(value - mean, 2), 0) / values.length;
+  return Math.sqrt(variance);
+}
+
 // Calculate confidence with damping for conflicts and high risk
 function calculateConfidenceWithDamping(score, inputs) {
-  const { marketScore, sectorScore, riskScore, portfolioScore } = inputs;
+  const { riskScore, contributions } = inputs;
 
-  // Base confidence from score magnitude
+  const conflictScore = calculateConflictScore(contributions);
+
+  // Confidence driven by conflict score magnitude only
   let confidence;
-  const absScore = Math.abs(score);
-  if (absScore > 0.7) {
+  if (conflictScore < 0.15) {
     confidence = 'high';
-  } else if (absScore > 0.3) {
+  } else if (conflictScore < 0.35) {
     confidence = 'medium';
   } else {
     confidence = 'low';
   }
 
-  // Apply damping for conflicts
-  const signals = [marketScore, sectorScore, riskScore, portfolioScore];
-  const positiveSignals = signals.filter(s => s > 0).length;
-  const negativeSignals = signals.filter(s => s < 0).length;
-
-  // If mixed signals (both positive and negative), reduce confidence
-  if (positiveSignals > 0 && negativeSignals > 0) {
-    if (confidence === 'high') confidence = 'medium';
-    else if (confidence === 'medium') confidence = 'low';
+  // Only dampen if extreme high risk
+  if (riskScore === -1 && conflictScore > 0.6) {
+    confidence = 'low';
   }
 
-  // Additional damping for high risk
-  if (riskScore === -1 && confidence === 'high') {
-    confidence = 'medium';
-  }
-
-  return confidence;
+  return { confidence, conflictScore };
 }
 
 // Generate sophisticated explanation using main driver, limiting factor, and reasoning
@@ -400,32 +401,41 @@ function generateSophisticatedExplanation(contributions, penalties, penaltyReaso
   const negativeFactors = factors.filter(f => f.value < 0).sort((a, b) => a.value - b.value);
   const limitingFactor = negativeFactors.length > 0 ? negativeFactors[0].negative : null;
 
+  // Deduplicate and merge penalty reasons to avoid redundancy
+  const uniquePenalties = [];
+  const penaltySet = new Set();
+  penaltyReasons.forEach(reason => {
+    if (!penaltySet.has(reason)) {
+      penaltySet.add(reason);
+      uniquePenalties.push(reason);
+    }
+  });
+
+  // Merge related concerns to avoid redundancy
+  let mergedLimitingFactor = limitingFactor;
+  if (limitingFactor && uniquePenalties.some(p => p.includes('exposure'))) {
+    mergedLimitingFactor = 'high risk and elevated exposure';
+  } else if (limitingFactor && uniquePenalties.some(p => p.includes('risk'))) {
+    mergedLimitingFactor = limitingFactor;
+  }
+
   // Build explanation
   let explanation = '';
 
-  if (mainDriver && limitingFactor) {
-    explanation = `${mainDriver.charAt(0).toUpperCase() + mainDriver.slice(1)} supports upside potential, but ${limitingFactor}`;
-    if (penaltyReasons.length > 0) {
-      explanation += ` and ${penaltyReasons.join(' and ')}`;
-    }
-    explanation += ' limit further allocation.';
+  if (mainDriver && mergedLimitingFactor) {
+    explanation = `${mainDriver.charAt(0).toUpperCase() + mainDriver.slice(1)} supports upside potential, but ${mergedLimitingFactor} limit further allocation.`;
   } else if (mainDriver) {
     explanation = `${mainDriver.charAt(0).toUpperCase() + mainDriver.slice(1)} creates a favorable environment for investment.`;
-  } else if (limitingFactor) {
-    explanation = `${limitingFactor.charAt(0).toUpperCase() + limitingFactor.slice(1)} suggests caution is warranted.`;
+  } else if (mergedLimitingFactor) {
+    explanation = `${mergedLimitingFactor.charAt(0).toUpperCase() + mergedLimitingFactor.slice(1)} suggests caution is warranted.`;
   } else {
     explanation = 'Market conditions are currently balanced with no strong directional signals.';
   }
 
-  // Add final reasoning based on action
-  const actionReasoning = {
-    'buy': ' Strategic allocation appears optimal.',
-    'accumulate': ' Gradual accumulation may be appropriate.',
-    'hold': ' Holding current positions is more optimal.',
-    'avoid': ' Risk mitigation takes precedence.'
-  };
+  // Add final reasoning
+  explanation += ' Holding current positions is more optimal.';
 
-  return explanation + actionReasoning['hold']; // Default to hold reasoning, will be updated based on final action
+  return explanation;
 }
 
 // Safe input normalization with defaults
@@ -457,12 +467,13 @@ function buildDecision(marketSentiment, sectorStrength, riskLevel, exposure, wei
   // Step 4: Determine action based on final score
   const action = determineAction(penalizedResult.score);
 
-  // Step 5: Calculate confidence with damping
-  const confidence = calculateConfidenceWithDamping(penalizedResult.score, {
+  // Step 5: Calculate confidence with damping and conflict awareness
+  const { confidence, conflictScore } = calculateConfidenceWithDamping(penalizedResult.score, {
     marketScore: convertToScores(inputs).market,
     sectorScore: convertToScores(inputs).sector,
     riskScore: convertToScores(inputs).risk,
-    portfolioScore: convertToScores(inputs).portfolio
+    portfolioScore: convertToScores(inputs).portfolio,
+    contributions: penalizedResult.contributions
   });
 
   // Step 6: Generate sophisticated explanation
@@ -476,6 +487,7 @@ function buildDecision(marketSentiment, sectorStrength, riskLevel, exposure, wei
     score: penalizedResult.score,
     action: action,
     confidence: confidence,
+    conflictScore: conflictScore,
     explanation: explanation,
     contributions: penalizedResult.contributions,
     penalties: penalizedResult.penalties,
@@ -596,5 +608,198 @@ function runDecisionTests() {
   };
 }
 
+/**
+ * Apply pattern-aware adjustments to contributions
+ * @param {object} contributions - Base contributions {market, sector, risk, portfolio}
+ * @param {object} patterns - Signal patterns from getSignalPatterns()
+ * @param {string} marketSentiment - Market sentiment value
+ * @param {string} sectorStrength - Sector strength value
+ * @param {string} riskLevel - Risk level value
+ * @returns {object} - Adjusted contributions
+ */
+function applyPatternAdjustments(contributions, patterns, marketSentiment, sectorStrength, riskLevel) {
+  if (!patterns || !contributions) {
+    return contributions;
+  }
+
+  const adjusted = { ...contributions };
+
+  // Amplification factor for pattern influence (3x multiplier for visible impact)
+  const PATTERN_AMPLIFICATION = 3;
+
+  // Adjust market contribution based on market sentiment pattern
+  const marketKey = (marketSentiment || 'neutral').toLowerCase();
+  if (patterns.market && patterns.market[marketKey]) {
+    const marketAvgAccuracy = patterns.market[marketKey].avgAccuracy || 0;
+    adjusted.market = contributions.market * (1 + marketAvgAccuracy * PATTERN_AMPLIFICATION);
+  }
+
+  // Adjust sector contribution based on sector strength pattern
+  const sectorKey = (sectorStrength || 'weak').toLowerCase();
+  if (patterns.sector && patterns.sector[sectorKey]) {
+    const sectorAvgAccuracy = patterns.sector[sectorKey].avgAccuracy || 0;
+    adjusted.sector = contributions.sector * (1 + sectorAvgAccuracy * PATTERN_AMPLIFICATION);
+  }
+
+  // Adjust risk contribution based on risk level pattern
+  const riskKey = (riskLevel || 'medium').toLowerCase();
+  if (patterns.risk && patterns.risk[riskKey]) {
+    const riskAvgAccuracy = patterns.risk[riskKey].avgAccuracy || 0;
+    adjusted.risk = contributions.risk * (1 + riskAvgAccuracy * PATTERN_AMPLIFICATION);
+  }
+
+  // Portfolio contribution remains unchanged (no signal pattern for portfolio exposure)
+  adjusted.portfolio = contributions.portfolio;
+
+  // Round to 4 decimal places for precision
+  adjusted.market = Math.round(adjusted.market * 10000) / 10000;
+  adjusted.sector = Math.round(adjusted.sector * 10000) / 10000;
+  adjusted.risk = Math.round(adjusted.risk * 10000) / 10000;
+
+  return adjusted;
+}
+
+/**
+ * Recalculate score from adjusted contributions
+ * @param {object} adjustedContributions - Pattern-adjusted contributions
+ * @returns {number} - Recalculated score
+ */
+function recalculateScore(adjustedContributions) {
+  const score = (
+    adjustedContributions.market +
+    adjustedContributions.sector +
+    adjustedContributions.risk +
+    adjustedContributions.portfolio
+  );
+
+  return Math.round(score * 1000) / 1000;
+}
+
+/**
+ * Build decision with pattern-aware signal intelligence
+ * @param {string} marketSentiment - Market sentiment
+ * @param {string} sectorStrength - Sector strength
+ * @param {string} riskLevel - Risk level
+ * @param {number} exposure - Portfolio exposure
+ * @param {object} weights - Dynamic weights
+ * @param {object} patterns - Signal patterns from getSignalPatterns()
+ * @returns {object} - Enhanced decision with pattern adjustments
+ */
+function buildDecisionWithPatternAdjustments(
+  marketSentiment,
+  sectorStrength,
+  riskLevel,
+  exposure,
+  weights = null,
+  patterns = null
+) {
+  // Get base decision
+  const baseDecision = buildDecision(marketSentiment, sectorStrength, riskLevel, exposure, weights);
+
+  // If patterns available, apply adjustments
+  if (patterns) {
+    const adjustedContributions = applyPatternAdjustments(
+      baseDecision.contributions,
+      patterns,
+      marketSentiment,
+      sectorStrength,
+      riskLevel
+    );
+
+    // Recalculate score with adjusted contributions
+    const adjustedScore = recalculateScore(adjustedContributions);
+
+    // Recalculate action and confidence with adjusted score
+    const adjustedAction = determineAction(adjustedScore);
+    const { confidence: adjustedConfidence, conflictScore } = calculateConfidenceWithDamping(adjustedScore, {
+      marketScore: convertToScores({
+        marketSentiment,
+        sectorStrength,
+        riskLevel,
+        exposure
+      }).market,
+      sectorScore: convertToScores({
+        marketSentiment,
+        sectorStrength,
+        riskLevel,
+        exposure
+      }).sector,
+      riskScore: convertToScores({
+        marketSentiment,
+        sectorStrength,
+        riskLevel,
+        exposure
+      }).risk,
+      portfolioScore: convertToScores({
+        marketSentiment,
+        sectorStrength,
+        riskLevel,
+        exposure
+      }).portfolio,
+      contributions: adjustedContributions
+    });
+
+    // Generate explanation with adjusted contributions
+    const adjustedExplanation = generateSophisticatedExplanation(
+      adjustedContributions,
+      baseDecision.penalties,
+      baseDecision.penaltyReasons
+    );
+
+    return {
+      score: adjustedScore,
+      action: adjustedAction,
+      confidence: adjustedConfidence,
+      conflictScore: conflictScore,
+      explanation: adjustedExplanation,
+      contributions: adjustedContributions,
+      penalties: baseDecision.penalties,
+      penaltyReasons: baseDecision.penaltyReasons,
+      patternEnhanced: true,
+      baseScore: baseDecision.score,
+      baseAction: baseDecision.action
+    };
+  }
+
+  // Return base decision if no patterns
+  return {
+    ...baseDecision,
+    patternEnhanced: false
+  };
+}
+
+/**
+ * Async wrapper to fetch patterns and build decision
+ * @param {string} marketSentiment - Market sentiment
+ * @param {string} sectorStrength - Sector strength
+ * @param {string} riskLevel - Risk level
+ * @param {number} exposure - Portfolio exposure
+ * @param {object} weights - Dynamic weights
+ * @returns {Promise<object>} - Decision with pattern-aware adjustments
+ */
+export async function buildDecisionAsync(
+  marketSentiment,
+  sectorStrength,
+  riskLevel,
+  exposure,
+  weights = null
+) {
+  try {
+    const patterns = await getSignalPatterns();
+    return buildDecisionWithPatternAdjustments(
+      marketSentiment,
+      sectorStrength,
+      riskLevel,
+      exposure,
+      weights,
+      patterns
+    );
+  } catch (error) {
+    console.error('Error building decision with patterns:', error);
+    // Fallback to base decision without patterns
+    return buildDecision(marketSentiment, sectorStrength, riskLevel, exposure, weights);
+  }
+}
+
 // Export new functions for external use
-export { buildDecision, runDecisionTests };
+export { buildDecision, runDecisionTests, buildDecisionWithPatternAdjustments };

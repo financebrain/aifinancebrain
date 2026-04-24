@@ -7,10 +7,11 @@
 4. [Data Pipeline — How Insights Are Generated](#data-pipeline)
 5. [Agent System — The 8 Agents](#agent-system)
 6. [Decision Engine Logic](#decision-engine-logic)
-7. [API Endpoints — Complete Reference](#api-endpoints)
-8. [Frontend Components & Flow](#frontend-components--flow)
-9. [Core Utilities & Libraries](#core-utilities--libraries)
-10. [Complete Code Walkthroughs](#complete-code-walkthroughs)
+7. [Decision Memory System — Adaptive Weights](#decision-memory-system)
+8. [API Endpoints — Complete Reference](#api-endpoints)
+9. [Frontend Components & Flow](#frontend-components--flow)
+10. [Core Utilities & Libraries](#core-utilities--libraries)
+11. [Complete Code Walkthroughs](#complete-code-walkthroughs)
 
 ---
 
@@ -151,6 +152,23 @@ CREATE TABLE feedback (
 
 **Purpose**: Tracks user feedback on insights (for Phase 3)
 **Status**: Partially implemented
+
+#### 5. `decision_history` — Adaptive Learning Records
+```sql
+CREATE TABLE decision_history (
+  id UUID PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id),
+  market_sentiment TEXT,
+  sector TEXT,
+  risk_level TEXT,
+  accuracy_score NUMERIC,
+  outcome TEXT,
+  created_at TIMESTAMP
+);
+```
+
+**Purpose**: Stores past decisions and outcomes for adaptive weight learning
+**Used By**: `lib/decision-memory.js`, `/api/test-weights/route.js`
 
 ---
 
@@ -690,6 +708,117 @@ function buildFinalDecision({ market, news, sector, opportunity, risk, portfolio
 
 ---
 
+## DECISION MEMORY SYSTEM — ADAPTIVE WEIGHTS
+
+### Overview
+The Decision Memory System implements adaptive learning for the decision engine. It tracks decision outcomes, computes dynamic weights based on historical performance, and adjusts agent influence over time.
+
+### Key Components
+
+#### 1. Decision History Table
+```sql
+CREATE TABLE decision_history (
+  id UUID PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id),
+  market_sentiment TEXT,
+  sector TEXT,
+  risk_level TEXT,
+  accuracy_score NUMERIC, -- -1 to 1, decimal values
+  outcome TEXT, -- 'win' | 'loss'
+  created_at TIMESTAMP
+);
+```
+
+#### 2. Dynamic Weight Computation
+Weights are calculated from raw decision history data using recency-weighted scoring:
+
+```javascript
+// lib/decision-memory.js
+export async function getDynamicWeights() {
+  // Fetch raw rows from decision_history
+  const { data } = await supabase
+    .from('decision_history')
+    .select('market_sentiment, sector, risk_level, accuracy_score, created_at')
+    .not('accuracy_score', 'is', null);
+
+  // Compute category scores (market, sector, risk)
+  const marketScore = computeCategoryScore(data, 'market_sentiment');
+  const sectorScore = computeCategoryScore(data, 'sector');
+  const riskScore = computeCategoryScore(data, 'risk_level');
+
+  // Normalize and smooth weights
+  const rawWeights = {
+    market: adjustablePool * (marketScore / totalSignalScore),
+    sector: adjustablePool * (sectorScore / totalSignalScore),
+    risk: adjustablePool * (riskScore / totalSignalScore),
+    portfolio: DEFAULT_DECISION_WEIGHTS.portfolio
+  };
+
+  const smoothedWeights = {
+    market: DEFAULT_WEIGHTS.market * (1 - adaptFactor) + rawWeights.market * adaptFactor,
+    // ... similar for sector, risk
+  };
+
+  return normalizeWeights(smoothedWeights);
+}
+```
+
+#### 3. Category Score Calculation
+For each signal category (market, sector, risk), select the strongest performing signal:
+
+```javascript
+function computeCategoryScore(rows, field) {
+  const groups = {};
+
+  // Group by signal value (e.g., bullish, bearish)
+  rows.forEach(row => {
+    const key = row[field];
+    // Compute recency-weighted accuracy
+    const recencyFactor = 1 / (1 + days / 7);
+    const weightedAccuracy = accuracy * recencyFactor;
+    groups[key].totalWeightedAccuracy += weightedAccuracy;
+    groups[key].count += 1;
+  });
+
+  // Select strongest signal
+  let strongestScore = 0;
+  Object.values(groups).forEach(bucket => {
+    const avgAccuracy = bucket.totalWeightedAccuracy / bucket.count;
+    let score = avgAccuracy * Math.log(bucket.count + 1);
+    if (score < 0) score *= 1.5; // Negative penalty
+    if (Math.abs(score) > Math.abs(strongestScore)) strongestScore = score;
+  });
+
+  return strongestScore;
+}
+```
+
+#### 4. Testing and Validation
+```javascript
+// Test function to ensure data and weights
+export async function testDynamicWeights() {
+  // Ensure sufficient test data exists
+  if (existingCount < 10) {
+    // Insert realistic test entries
+  }
+
+  const weights = await getDynamicWeights();
+  return { dynamicWeights: weights };
+}
+```
+
+### API Integration
+- **GET /api/test-weights**: Returns current dynamic weights for testing
+- Integrated into `/api/run-all` for real-time weight adjustment
+
+### Learning Mechanism
+- **Recency Weighting**: Recent decisions have higher influence
+- **Signal Strength**: Strongest signals per category dominate
+- **Smoothing**: Gradual adaptation prevents abrupt changes
+- **Fallback**: Defaults to static weights when history is sparse
+
+---
+
 ## API ENDPOINTS — COMPLETE REFERENCE
 
 ### 1. GET /api/run-all
@@ -733,7 +862,29 @@ Cookie: session_cookie
 
 ---
 
-### 2. GET /api/insights
+### 2. GET /api/test-weights
+**Purpose**: Validate the adaptive weight computation and return current dynamic weights
+
+**Request**:
+```
+GET /api/test-weights
+```
+
+**Response**:
+```json
+{
+  "dynamicWeights": {
+    "market": 0.27,
+    "sector": 0.33,
+    "risk": 0.20,
+    "portfolio": 0.20
+  }
+}
+```
+
+---
+
+### 3. GET /api/insights
 **Purpose**: Fetch latest insights for dashboard
 
 **Logic**:

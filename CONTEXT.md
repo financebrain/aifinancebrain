@@ -41,6 +41,7 @@ app/ - Next.js pages and routes
       ├── chat/route.js            (Chat completions)
       ├── insights/route.js        (Query/store insights)
       ├── market-data/route.js     (Live market data)
+      ├── test-weights/route.js    (Adaptive weight test endpoint)
       └── run-all/route.js         (Execute all agents + decision engine)
 
 components/
@@ -63,7 +64,9 @@ lib/ - Core utilities
   ├── user-context.js             (Get user profile + holdings)
   ├── data-fetcher.js             (Market data aggregator)
   ├── data-provider.js            (Data providers - Yahoo Finance, etc)
-  └── news-provider.js            (News data aggregator)
+  ├── news-provider.js            (News data aggregator)
+  ├── decision-memory.js          (Decision history, adaptive weights)
+  └── json-utils.js               (JSON parsing utilities)
 
 public/ - Static assets
 
@@ -84,6 +87,7 @@ Root Config Files
   - risk_tolerance: 'conservative' | 'moderate' | 'aggressive'
 - **holdings**: id, user_id, name, symbol, quantity, avg_buy_price, asset_type
 - **feedback**: id, user_id, insight_id, rating, message (for thumbs up/down)
+- **decision_history**: id, user_id, market_sentiment, sector, risk_level, accuracy_score, outcome, created_at
 
 ## Agent Architecture Pattern
 Every Agent Follows This Exactly:
@@ -113,6 +117,7 @@ Every Agent Follows This Exactly:
 - **GET /api/agents/opportunity** - Get opportunity signals
 - **GET /api/agents/risk** - Get risk alerts
 - **GET /api/run-all** - Execute ALL agents + decision engine
+- **GET /api/test-weights** - Test adaptive dynamic weights
 - **POST /api/insights** - Query/store insights
 - **POST /api/chat** - Chat completions (uses Gemini)
 - **GET /api/market-data** - Live market prices
@@ -128,6 +133,9 @@ Every Agent Follows This Exactly:
 - Market Brief page with historical insights feed
 - Deployed on Vercel
 - Personalization context applied to all insights
+- Adaptive decision scoring and memory system with dynamic weights
+- Real database-backed decision history and outcome tracking
+- Decision engine using weighted scoring and recency-based learning
 
 ## Current Bugs / Known Issues ⚠️
 1. Dashboard not loading insights on page open
@@ -148,6 +156,8 @@ Every Agent Follows This Exactly:
 - ✅ Auth, onboarding, portfolio, user context, personalised agents
 - ✅ Decision engine combining agents
 - ✅ Portfolio exposure engine
+- ✅ Adaptive decision memory system with dynamic weights
+- ✅ Real database-backed decision history and testing
 - ❌ Feedback thumbs on insight cards (UI done, backend incomplete)
 - ❌ Admin dashboard (page exists, functionality missing)
 - ❌ Bug fixes above
