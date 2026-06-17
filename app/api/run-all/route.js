@@ -11,7 +11,7 @@ import { runRiskAgent } from '../../../agents/risk-agent.js';
 import { buildFinalDecision } from '../../../agents/decision-engine.js';
 import { personalizeDecision } from '../../../agents/personalization-engine.js';
 import { applyPortfolioContext } from '../../../agents/portfolio-exposure-engine.js';
-import { saveDecisionHistory, getDynamicWeights } from '../../../lib/decision-memory.js';
+import { saveDecisionHistory, getDynamicWeights, getRealPatterns } from '../../../lib/decision-memory.js';
 import { v4 as uuidv4 } from 'uuid';
 
 async function getPrice(symbol) {
@@ -111,6 +111,16 @@ export async function GET(request) {
     console.log("PORTFOLIO BUILT:");
     console.log("SECTOR EXPOSURE:", portfolio);
 
+    // Fetch real patterns from user's closed trades
+    if (userId) {
+      try {
+        const realPatterns = await getRealPatterns(userId);
+        console.log("REAL_PATTERNS_AVAILABLE:", realPatterns);
+      } catch (error) {
+        console.warn("Failed to load real patterns:", error.message);
+      }
+    }
+
     const runId = uuidv4();
 
     console.log("RUNNING AGENTS...")
@@ -142,20 +152,21 @@ export async function GET(request) {
     console.log("PORTFOLIO PASSED TO DECISION ENGINE");
     let weights = null;
     try {
-      weights = await getDynamicWeights();
+      weights = await getDynamicWeights(userId);
     } catch (error) {
       console.error('Failed to compute dynamic weights:', error);
       weights = null;
     }
 
-    const finalDecision = buildFinalDecision({
+    const finalDecision = await buildFinalDecision({
       market,
       news,
       sector,
       opportunity,
       risk,
       portfolio,
-      weights
+      weights,
+      userId
     });
 
     // Extract inputs for decision memory tracking

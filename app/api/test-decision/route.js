@@ -1,16 +1,36 @@
-import { buildDecision } from '@/agents/decision-engine';
-import { getDynamicWeights } from '@/lib/decision-memory';
+import { buildDecisionAsync } from '../../../lib/quant-engine.js';
+import { getDynamicWeights } from '../../../lib/decision-memory.js';
+import { getMarketContext } from '../../../lib/market-intelligence.js';
 
 export async function GET() {
-  const input = {
-    marketSentiment: 'bullish',
-    sectorStrength: 'strong',
-    riskLevel: 'high',
-    exposure: 60
+  const marketContext = await getMarketContext();
+  const { marketSentiment, sector: sectorName, riskLevel, volatility, regime } = marketContext;
+  console.log('REGIME_FROM_MARKET_CONTEXT:', regime);
+  const inputs = {
+    marketSentiment,
+    sector: sectorName,
+    riskLevel,
+    exposure: 10,
+    regime
   };
 
   const weights = await getDynamicWeights();
-  const result = buildDecision(input.marketSentiment, input.sectorStrength, input.riskLevel, input.exposure, weights);
+  console.log('TEST INPUT:', inputs);
+  const result = await buildDecisionAsync(
+    inputs.marketSentiment,
+    inputs.sector,
+    inputs.riskLevel,
+    inputs.exposure,
+    weights,
+    inputs.sector,
+    inputs.regime
+  );
+
+  console.log({
+    baseScore: result.baseScore,
+    finalScore: result.score,
+    adjustedContributions: result.contributions
+  });
 
   return Response.json({
     action: result.action,

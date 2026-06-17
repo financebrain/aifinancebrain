@@ -1,0 +1,1160 @@
+{
+  "trades": [
+    {
+      "label": "trade1",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672716760684379,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100,
+          "stopLoss": 96.4,
+          "takeProfit": 107.2,
+          "riskPercent": 0.5,
+          "quantity": 138.89,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "2e6ef1a2-be50-4953-8ebb-fadcfdb61dcd"
+      },
+      "closed": {
+        "id": "2e6ef1a2-be50-4953-8ebb-fadcfdb61dcd",
+        "timestamp": "2026-04-27T04:35:58.500Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672716760684379,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100,
+          "stopLoss": 96.4,
+          "takeProfit": 107.2,
+          "riskPercent": 0.5,
+          "quantity": 138.89,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 107.2,
+        "profitLoss": 1000.01,
+        "outcome": "win",
+        "closedAt": "2026-04-27T04:35:58.501Z"
+      }
+    },
+    {
+      "label": "trade2",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100.01
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672716760684379,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100.01,
+          "stopLoss": 96.41,
+          "takeProfit": 107.21,
+          "riskPercent": 0.5,
+          "quantity": 138.88,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "5411608f-8ab0-4a41-aeb1-7d08f15225b1"
+      },
+      "closed": {
+        "id": "5411608f-8ab0-4a41-aeb1-7d08f15225b1",
+        "timestamp": "2026-04-27T04:35:58.506Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672716760684379,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100.01,
+          "stopLoss": 96.41,
+          "takeProfit": 107.21,
+          "riskPercent": 0.5,
+          "quantity": 138.88,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 107.21,
+        "profitLoss": 999.94,
+        "outcome": "win",
+        "closedAt": "2026-04-27T04:35:58.506Z"
+      }
+    },
+    {
+      "label": "trade3",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100.02
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672716760684379,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100.02,
+          "stopLoss": 96.42,
+          "takeProfit": 107.22,
+          "riskPercent": 0.5,
+          "quantity": 138.86,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "7e99b8d4-a18f-41ef-8a00-922fa8934a66"
+      },
+      "closed": {
+        "id": "7e99b8d4-a18f-41ef-8a00-922fa8934a66",
+        "timestamp": "2026-04-27T04:35:58.510Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672716760684379,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100.02,
+          "stopLoss": 96.42,
+          "takeProfit": 107.22,
+          "riskPercent": 0.5,
+          "quantity": 138.86,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 107.22,
+        "profitLoss": 999.79,
+        "outcome": "win",
+        "closedAt": "2026-04-27T04:35:58.510Z"
+      }
+    },
+    {
+      "label": "trade4",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100.03
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672716760684379,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100.03,
+          "stopLoss": 96.43,
+          "takeProfit": 107.23,
+          "riskPercent": 0.5,
+          "quantity": 138.85,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "d3907065-da65-456a-a8d9-f847070f2e22"
+      },
+      "closed": {
+        "id": "d3907065-da65-456a-a8d9-f847070f2e22",
+        "timestamp": "2026-04-27T04:35:58.513Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672716760684379,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100.03,
+          "stopLoss": 96.43,
+          "takeProfit": 107.23,
+          "riskPercent": 0.5,
+          "quantity": 138.85,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 107.23,
+        "profitLoss": 999.72,
+        "outcome": "win",
+        "closedAt": "2026-04-27T04:35:58.514Z"
+      }
+    },
+    {
+      "label": "trade5",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100.04
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672716760684379,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100.04,
+          "stopLoss": 96.44,
+          "takeProfit": 107.24,
+          "riskPercent": 0.5,
+          "quantity": 138.83,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "10ef9325-6768-4a9a-a115-dfcf8e274d3e"
+      },
+      "closed": {
+        "id": "10ef9325-6768-4a9a-a115-dfcf8e274d3e",
+        "timestamp": "2026-04-27T04:35:58.517Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672716760684379,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100.04,
+          "stopLoss": 96.44,
+          "takeProfit": 107.24,
+          "riskPercent": 0.5,
+          "quantity": 138.83,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 107.24,
+        "profitLoss": 999.58,
+        "outcome": "win",
+        "closedAt": "2026-04-27T04:35:58.518Z"
+      }
+    },
+    {
+      "label": "trade6",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100.05
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672716760684379,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100.05,
+          "stopLoss": 96.45,
+          "takeProfit": 107.25,
+          "riskPercent": 0.5,
+          "quantity": 138.82,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "efdc038a-49f4-49b2-99ac-9c5638789dcb"
+      },
+      "closed": {
+        "id": "efdc038a-49f4-49b2-99ac-9c5638789dcb",
+        "timestamp": "2026-04-27T04:35:58.523Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672716760684379,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100.05,
+          "stopLoss": 96.45,
+          "takeProfit": 107.25,
+          "riskPercent": 0.5,
+          "quantity": 138.82,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 107.25,
+        "profitLoss": 999.5,
+        "outcome": "win",
+        "closedAt": "2026-04-27T04:35:58.523Z"
+      }
+    },
+    {
+      "label": "trade7",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100.06
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672716760684379,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100.06,
+          "stopLoss": 96.46,
+          "takeProfit": 107.26,
+          "riskPercent": 0.5,
+          "quantity": 138.81,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "3c3b03b3-adbc-45ab-b5f3-510a2851b8da"
+      },
+      "closed": {
+        "id": "3c3b03b3-adbc-45ab-b5f3-510a2851b8da",
+        "timestamp": "2026-04-27T04:35:58.527Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672716760684379,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100.06,
+          "stopLoss": 96.46,
+          "takeProfit": 107.26,
+          "riskPercent": 0.5,
+          "quantity": 138.81,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 107.26,
+        "profitLoss": 999.43,
+        "outcome": "win",
+        "closedAt": "2026-04-27T04:35:58.527Z"
+      }
+    },
+    {
+      "label": "trade8",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100.07
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672716760684379,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100.07,
+          "stopLoss": 96.47,
+          "takeProfit": 107.28,
+          "riskPercent": 0.5,
+          "quantity": 138.79,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "c3e8ee00-080e-43c5-9976-1fec800feaf0"
+      },
+      "closed": {
+        "id": "c3e8ee00-080e-43c5-9976-1fec800feaf0",
+        "timestamp": "2026-04-27T04:35:58.531Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672716760684379,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100.07,
+          "stopLoss": 96.47,
+          "takeProfit": 107.28,
+          "riskPercent": 0.5,
+          "quantity": 138.79,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 107.28,
+        "profitLoss": 1000.68,
+        "outcome": "win",
+        "closedAt": "2026-04-27T04:35:58.531Z"
+      }
+    },
+    {
+      "label": "trade9",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100.08
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672716760684379,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100.08,
+          "stopLoss": 96.48,
+          "takeProfit": 107.29,
+          "riskPercent": 0.5,
+          "quantity": 138.78,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "6e28fe1e-98da-43b0-9196-f13349bca9af"
+      },
+      "closed": {
+        "id": "6e28fe1e-98da-43b0-9196-f13349bca9af",
+        "timestamp": "2026-04-27T04:35:58.535Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672716760684379,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100.08,
+          "stopLoss": 96.48,
+          "takeProfit": 107.29,
+          "riskPercent": 0.5,
+          "quantity": 138.78,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 107.29,
+        "profitLoss": 1000.6,
+        "outcome": "win",
+        "closedAt": "2026-04-27T04:35:58.535Z"
+      }
+    },
+    {
+      "label": "trade10",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100.09
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672716760684379,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100.09,
+          "stopLoss": 96.49,
+          "takeProfit": 107.3,
+          "riskPercent": 0.5,
+          "quantity": 138.76,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "77a43232-bcaf-455f-8b6b-8b91277c24f4"
+      },
+      "closed": {
+        "id": "77a43232-bcaf-455f-8b6b-8b91277c24f4",
+        "timestamp": "2026-04-27T04:35:58.539Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672716760684379,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100.09,
+          "stopLoss": 96.49,
+          "takeProfit": 107.3,
+          "riskPercent": 0.5,
+          "quantity": 138.76,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 107.3,
+        "profitLoss": 1000.46,
+        "outcome": "win",
+        "closedAt": "2026-04-27T04:35:58.540Z"
+      }
+    },
+    {
+      "label": "trade11",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100.1
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672716760684379,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100.1,
+          "stopLoss": 96.5,
+          "takeProfit": 107.31,
+          "riskPercent": 0.5,
+          "quantity": 138.75,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "eb6dcc11-3933-4eda-8568-f916d1dadd0f"
+      },
+      "closed": {
+        "id": "eb6dcc11-3933-4eda-8568-f916d1dadd0f",
+        "timestamp": "2026-04-27T04:35:58.543Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672716760684379,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100.1,
+          "stopLoss": 96.5,
+          "takeProfit": 107.31,
+          "riskPercent": 0.5,
+          "quantity": 138.75,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 107.31,
+        "profitLoss": 1000.39,
+        "outcome": "win",
+        "closedAt": "2026-04-27T04:35:58.543Z"
+      }
+    },
+    {
+      "label": "trade12",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100.11
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672616673563222,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100.11,
+          "stopLoss": 96.51,
+          "takeProfit": 107.32,
+          "riskPercent": 0.5,
+          "quantity": 138.74,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "1359e503-2e48-4729-a434-dcdb0169c30c"
+      },
+      "closed": {
+        "id": "1359e503-2e48-4729-a434-dcdb0169c30c",
+        "timestamp": "2026-04-27T04:35:58.547Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672616673563222,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100.11,
+          "stopLoss": 96.51,
+          "takeProfit": 107.32,
+          "riskPercent": 0.5,
+          "quantity": 138.74,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 107.32,
+        "profitLoss": 1000.32,
+        "outcome": "win",
+        "closedAt": "2026-04-27T04:35:58.547Z"
+      }
+    },
+    {
+      "label": "trade13",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100.12
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672616673563222,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100.12,
+          "stopLoss": 96.52,
+          "takeProfit": 107.33,
+          "riskPercent": 0.5,
+          "quantity": 138.72,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "52a835e6-360c-44a5-b245-95549874ef21"
+      },
+      "closed": {
+        "id": "52a835e6-360c-44a5-b245-95549874ef21",
+        "timestamp": "2026-04-27T04:35:58.552Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672616673563222,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100.12,
+          "stopLoss": 96.52,
+          "takeProfit": 107.33,
+          "riskPercent": 0.5,
+          "quantity": 138.72,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 107.33,
+        "profitLoss": 1000.17,
+        "outcome": "win",
+        "closedAt": "2026-04-27T04:35:58.552Z"
+      }
+    },
+    {
+      "label": "trade14",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100.13
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672616673563222,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100.13,
+          "stopLoss": 96.53,
+          "takeProfit": 107.34,
+          "riskPercent": 0.5,
+          "quantity": 138.71,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "d3e0f301-c55b-4336-852f-9d879d790006"
+      },
+      "closed": {
+        "id": "d3e0f301-c55b-4336-852f-9d879d790006",
+        "timestamp": "2026-04-27T04:35:58.556Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672616673563222,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100.13,
+          "stopLoss": 96.53,
+          "takeProfit": 107.34,
+          "riskPercent": 0.5,
+          "quantity": 138.71,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 107.34,
+        "profitLoss": 1000.1,
+        "outcome": "win",
+        "closedAt": "2026-04-27T04:35:58.556Z"
+      }
+    },
+    {
+      "label": "trade15",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100.14
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672516486018849,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100.14,
+          "stopLoss": 96.53,
+          "takeProfit": 107.35,
+          "riskPercent": 0.5,
+          "quantity": 138.69,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "2dbd1972-b852-46e1-81fd-e598bd418774"
+      },
+      "closed": {
+        "id": "2dbd1972-b852-46e1-81fd-e598bd418774",
+        "timestamp": "2026-04-27T04:35:58.559Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672516486018849,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100.14,
+          "stopLoss": 96.53,
+          "takeProfit": 107.35,
+          "riskPercent": 0.5,
+          "quantity": 138.69,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 107.35,
+        "profitLoss": 999.95,
+        "outcome": "win",
+        "closedAt": "2026-04-27T04:35:58.559Z"
+      }
+    },
+    {
+      "label": "trade16",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100.15
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672516486018849,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100.15,
+          "stopLoss": 96.54,
+          "takeProfit": 107.36,
+          "riskPercent": 0.5,
+          "quantity": 138.68,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "9533c28c-ba63-4f05-8855-feafe56ca298"
+      },
+      "closed": {
+        "id": "9533c28c-ba63-4f05-8855-feafe56ca298",
+        "timestamp": "2026-04-27T04:35:58.562Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672516486018849,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100.15,
+          "stopLoss": 96.54,
+          "takeProfit": 107.36,
+          "riskPercent": 0.5,
+          "quantity": 138.68,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 107.36,
+        "profitLoss": 999.88,
+        "outcome": "win",
+        "closedAt": "2026-04-27T04:35:58.563Z"
+      }
+    },
+    {
+      "label": "trade17",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100.16
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672616673563222,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100.16,
+          "stopLoss": 96.55,
+          "takeProfit": 107.37,
+          "riskPercent": 0.5,
+          "quantity": 138.67,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "97c993f0-0ca9-45c1-89e6-3a969aae0ac5"
+      },
+      "closed": {
+        "id": "97c993f0-0ca9-45c1-89e6-3a969aae0ac5",
+        "timestamp": "2026-04-27T04:35:58.566Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672616673563222,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100.16,
+          "stopLoss": 96.55,
+          "takeProfit": 107.37,
+          "riskPercent": 0.5,
+          "quantity": 138.67,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 96.55,
+        "profitLoss": -500.6,
+        "outcome": "loss",
+        "closedAt": "2026-04-27T04:35:58.566Z"
+      }
+    },
+    {
+      "label": "trade18",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100.17
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672616673563222,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100.17,
+          "stopLoss": 96.56,
+          "takeProfit": 107.38,
+          "riskPercent": 0.5,
+          "quantity": 138.65,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "c9d1dc23-2447-4bd4-9795-c62de6ba28a2"
+      },
+      "closed": {
+        "id": "c9d1dc23-2447-4bd4-9795-c62de6ba28a2",
+        "timestamp": "2026-04-27T04:35:58.570Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672616673563222,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100.17,
+          "stopLoss": 96.56,
+          "takeProfit": 107.38,
+          "riskPercent": 0.5,
+          "quantity": 138.65,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 96.56,
+        "profitLoss": -500.53,
+        "outcome": "loss",
+        "closedAt": "2026-04-27T04:35:58.570Z"
+      }
+    },
+    {
+      "label": "trade19",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100.18
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672516486018849,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100.18,
+          "stopLoss": 96.57,
+          "takeProfit": 107.39,
+          "riskPercent": 0.5,
+          "quantity": 138.64,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "866cbf0c-2f26-4ba8-b1bb-32fa7e4b1b03"
+      },
+      "closed": {
+        "id": "866cbf0c-2f26-4ba8-b1bb-32fa7e4b1b03",
+        "timestamp": "2026-04-27T04:35:58.574Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672516486018849,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100.18,
+          "stopLoss": 96.57,
+          "takeProfit": 107.39,
+          "riskPercent": 0.5,
+          "quantity": 138.64,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 96.57,
+        "profitLoss": -500.49,
+        "outcome": "loss",
+        "closedAt": "2026-04-27T04:35:58.574Z"
+      }
+    },
+    {
+      "label": "trade20",
+      "params": {
+        "marketSentiment": "bullish",
+        "sector": "technology",
+        "riskLevel": "low",
+        "exposure": 10,
+        "volatility": 0.02,
+        "currentPrice": 100.19
+      },
+      "result": {
+        "action": "accumulate",
+        "confidenceScore": 0.3672516486018849,
+        "score": 0.046,
+        "patternEnhanced": true,
+        "execution": {
+          "entry": 100.19,
+          "stopLoss": 96.58,
+          "takeProfit": 107.4,
+          "riskPercent": 0.5,
+          "quantity": 138.63,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "tradeId": "037e98e9-e02e-4658-aee7-785212d690de"
+      },
+      "closed": {
+        "id": "037e98e9-e02e-4658-aee7-785212d690de",
+        "timestamp": "2026-04-27T04:35:58.577Z",
+        "input": {
+          "marketSentiment": "bullish",
+          "sector": "technology",
+          "riskLevel": "low",
+          "volatility": 0.02
+        },
+        "decision": {
+          "action": "accumulate",
+          "confidenceScore": 0.3672516486018849,
+          "score": 0.046
+        },
+        "execution": {
+          "entry": 100.19,
+          "stopLoss": 96.58,
+          "takeProfit": 107.4,
+          "riskPercent": 0.5,
+          "quantity": 138.63,
+          "riskRewardRatio": 2,
+          "tradeType": "normal"
+        },
+        "status": "closed",
+        "exitPrice": 96.58,
+        "profitLoss": -500.45,
+        "outcome": "loss",
+        "closedAt": "2026-04-27T04:35:58.577Z"
+      }
+    }
+  ],
+  "stats": {
+    "totalTrades": 20,
+    "wins": 16,
+    "losses": 4,
+    "winRate": 0.8,
+    "sectorPerformance": {
+      "technology": {
+        "total": 20,
+        "wins": 16,
+        "losses": 4,
+        "winRate": 0.8
+      }
+    },
+    "marketPerformance": {
+      "bullish": {
+        "total": 20,
+        "wins": 16,
+        "losses": 4,
+        "winRate": 0.8
+      }
+    },
+    "riskPerformance": {
+      "low": {
+        "total": 20,
+        "wins": 16,
+        "losses": 4,
+        "winRate": 0.8
+      }
+    }
+  },
+  "adaptiveWeights": {
+    "market": 0.252,
+    "sector": 0.3,
+    "risk": 0.251,
+    "portfolio": 0.197
+  }
+}
